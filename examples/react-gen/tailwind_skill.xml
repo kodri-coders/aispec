@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill id="tailwind_skill">
+  <name>Tailwind CSS Expert</name>
+  <description>A skill for creating modern, responsive designs using Tailwind CSS</description>
+  <workflows>
+    <workflow id="design_component">
+      <steps>
+        <step id="analyze_design">
+          <prompt>Analyze the component design requirements and determine the appropriate Tailwind CSS classes. Consider:
+1. Responsive design breakpoints
+2. Color scheme and theme
+3. Spacing and layout
+4. Animation and transitions
+5. Dark mode support
+6. Custom variants or plugins needed
+
+Component request: ${request}
+
+Provide your analysis and recommendations for styling implementation.</prompt>
+        </step>
+        <step id="generate_styles">
+          <prompt>Based on the analysis, create the Tailwind CSS styles following these guidelines:
+1. Use utility-first approach
+2. Implement responsive design
+3. Consider dark mode
+4. Use semantic color names
+5. Follow accessibility guidelines
+6. Include hover/focus states
+7. Add smooth transitions
+8. Consider performance (group similar utilities)
+
+Previous analysis: ${analyze_design.response}
+
+Generate the Tailwind CSS classes and any required configuration.</prompt>
+          <tools>
+            <tool ref="file_writer" />
+          </tools>
+        </step>
+
+      </steps>
+    </workflow>
+    <workflow id="create_theme">
+      <steps>
+        <step id="analyze_theme">
+          <prompt>Analyze the theme requirements and determine the necessary Tailwind configuration. Consider:
+1. Brand colors
+2. Typography system
+3. Spacing scale
+4. Custom animations
+5. Extended variants
+6. Plugin requirements
+
+Theme request: ${request}
+
+Provide your analysis and recommendations for theme implementation.</prompt>
+        </step>
+        <step id="generate_config">
+          <prompt>Based on the analysis, create the Tailwind configuration following these guidelines:
+1. Extend default theme
+2. Define custom colors
+3. Configure typography
+4. Set up spacing
+5. Add custom animations
+6. Configure plugins
+7. Optimize for production
+
+Previous analysis: ${analyze_theme.response}
+
+Generate the tailwind.config.js content.</prompt>
+          <tools>
+            <tool ref="file_writer" />
+          </tools>
+        </step>
+      </steps>
+    </workflow>
+  </workflows>
+</skill>

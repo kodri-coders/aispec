@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assistant id="search_assistant">
+  <name>Search Assistant</name>
+  <description>An assistant that helps with searching and analyzing information</description>
+  <skills>
+    <skill ref="examples/search_skill.xml"/>
+  </skills>
+  <workflows>
+    <workflow id="search_and_summarize">
+      <name>Search and Summarize</name>
+      <description>Search for information and provide a summary</description>
+      <steps>
+        <step id="search">
+          <name>Search</name>
+          <description>Perform the search</description>
+          <tools>
+            <tool ref="search_tool"/>
+          </tools>
+          <prompt>Please search for: ${query}</prompt>
+        </step>
+        <step id="summarize">
+          <name>Summarize</name>
+          <description>Summarize the search results</description>
+          <prompt>Create a concise summary of the search results.</prompt>
+        </step>
+      </steps>
+    </workflow>
+  </workflows>
+</assistant>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skill id="search">
+  <name>Search Skill</name>
+  <description>A skill for performing searches using various tools</description>
+  <workflows>
+    <workflow id="web_search">
+      <name>Web Search</name>
+      <description>Perform a web search and analyze results</description>
+      <input>query</input>
+      <output>results</output>
+      <steps>
+        <step id="search_step">
+          <name>Search Step</name>
+          <description>Perform the search using search tool</description>
+          <tools>
+            <tool ref="search_tool">
+              <parameters>
+                <parameter name="query">${query}</parameter>
+              </parameters>
+            </tool>
+          </tools>
+          <prompt>Searching for: ${query}</prompt>
+        </step>
+        <step id="analyze_step">
+          <name>Analysis Step</name>
+          <description>Analyze the search results</description>
+          <prompt>Analyzing search results to find the most relevant information.</prompt>
+        </step>
+      </steps>
+    </workflow>
+  </workflows>
+</skill>
