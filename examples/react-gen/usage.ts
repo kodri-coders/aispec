@@ -9,40 +9,6 @@ import { tools as filesystemTools } from '@aispec/lib/tools/filesystem/index';
 const projectRoot = path.join(__dirname, '../..');
 dotenv.config({ path: path.join(projectRoot, '.env') });
 
-// Define a file writer tool
-const fileWriterTool: Tool = {
-  id: 'file_writer',
-  name: 'File Writer',
-  description: 'Creates or updates files in the artifacts directory',
-  parameters: [
-    {
-      name: 'filepath',
-      type: 'string',
-      description: 'The name of the file to create/update (relative to artifacts directory)',
-      required: true,
-    },
-    {
-      name: 'content',
-      type: 'string',
-      description: 'The content to write to the file. Make sure it is serialized in a single line for json',
-      required: true,
-    },
-  ],
-  returnType: 'string',
-  handler: async (params: ToolParameters) => {
-    const artifactsDir = path.join(__dirname, 'artifacts');
-    const filePath = path.join(artifactsDir, params.filename as string);
-    const dirPath = path.dirname(filePath);
-
-    // Ensure directory exists
-    await fs.mkdir(dirPath, { recursive: true });
-
-    // Write file
-    await fs.writeFile(filePath, params.content as string);
-    return `Created file: ${params.filename}`;
-  },
-};
-
 async function main() {
   try {
     // Verify environment variables
