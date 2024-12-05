@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<assistant id="react_generator">
-  <name>React Component Generator</name>
-  <description>An experienced React/Tailwind developer that generates components using atomic design principles</description>
-  <skills>
-    <skill ref="react_skill.xml" />
-    <skill ref="tailwind_skill.xml" />
-  </skills>
-</assistant>
