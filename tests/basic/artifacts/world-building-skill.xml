@@ -1,0 +1,92 @@
+<skill id="skill1">
+  <name>World building</name>
+  <description>A skill that allows you to build a world</description>
+  <workflows>
+    <workflow id="character-building">
+      <name>Character building</name>
+      <description>A workflow that allows you to build a character with a given name</description>
+      <input>
+        <name>Human name</name>
+        <description>Input description</description>
+        <schema>
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "surnamesLength": {
+                "type": "number"
+              }
+            }
+          }
+        </schema>
+      </input>
+      <steps>
+        <step id="surname-generation">
+          <name>Surname generation</name>
+          <description>Surname generation step</description>
+          <prompt>
+            Produce ${surnamesLength} surnames that sound good with the name: ${name}
+          </prompt>
+          <output id="surnames">
+            <name>Surnames</name>
+            <schema>
+              {
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            </schema>
+          </output>
+        </step>
+        <step id="surname-selection">
+          <name>Surname selection</name>
+          <description>Surname selection step</description>
+          <prompt>
+            Given the name: ${name} select one of the surnames: ${surnames}
+          </prompt>
+          <output id="surname">
+            <name>Surname</name>
+            <schema>
+              {
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }
+            </schema>
+          </output>
+        </step>
+        <step id="character-generation">
+          <name>Character generation</name>
+          <description>Character generation step</description>
+          <prompt>
+            Generate a character with the name: ${name} and the surname: ${surname}
+          </prompt>
+          <output id="character">
+            <name>Character</name>
+            <schema>
+              {
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }
+            </schema>
+          </output>
+        </step>
+      </steps>
+    </workflow>
+  </workflows>
+</skill>

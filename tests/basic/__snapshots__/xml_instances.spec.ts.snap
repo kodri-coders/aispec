@@ -1,0 +1,1019 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assistant loads name and description 1`] = `"Movie builder"`;
+
+exports[`assistant loads name and description 2`] = `"Assistant 1 description"`;
+
+exports[`assistant loads workflows 1`] = `
+[
+  Workflow {
+    "description": "Workflow 2 description",
+    "name": "Movie ideas",
+    "node": {
+      "@id": "movie-ideas",
+      "description": "Workflow 2 description",
+      "input": {
+        "description": "The genre of the movie",
+        "name": "Movie idea genre",
+        "schema": "{
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }",
+      },
+      "name": "Movie ideas",
+      "steps": {
+        "step": [
+          {
+            "@id": "ideas-generation",
+            "output": {
+              "@id": "ideas",
+              "name": "Movie ideas",
+              "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+            },
+            "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+          },
+        ],
+      },
+    },
+    "parent": undefined,
+    "steps": [
+      Step {
+        "description": undefined,
+        "input": undefined,
+        "name": undefined,
+        "node": {
+          "@id": "ideas-generation",
+          "output": {
+            "@id": "ideas",
+            "name": "Movie ideas",
+            "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+          },
+          "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+        },
+        "output": Output {
+          "description": undefined,
+          "name": "Movie ideas",
+          "output": {
+            "@id": "ideas",
+            "name": "Movie ideas",
+            "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+          },
+          "schema": {
+            "properties": {
+              "ideas": {
+                "items": {
+                  "type": "string",
+                },
+                "type": "array",
+              },
+            },
+            "type": "object",
+          },
+        },
+        "parent": undefined,
+        "prompt": Prompt {
+          "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+          "variables": [
+            "\${genre}",
+          ],
+        },
+        "step": {
+          "@id": "ideas-generation",
+          "output": {
+            "@id": "ideas",
+            "name": "Movie ideas",
+            "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+          },
+          "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+        },
+      },
+    ],
+    "workflow": {
+      "@id": "movie-ideas",
+      "description": "Workflow 2 description",
+      "input": {
+        "description": "The genre of the movie",
+        "name": "Movie idea genre",
+        "schema": "{
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }",
+      },
+      "name": "Movie ideas",
+      "steps": {
+        "step": [
+          {
+            "@id": "ideas-generation",
+            "output": {
+              "@id": "ideas",
+              "name": "Movie ideas",
+              "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+            },
+            "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+          },
+        ],
+      },
+    },
+  },
+]
+`;
+
+exports[`assistant loads xml 1`] = `
+Assistant {
+  "description": "Assistant 1 description",
+  "model": {
+    "max_tokens": 1000,
+    "name": "gpt-4o",
+    "temperature": 0.5,
+  },
+  "name": "Movie builder",
+  "node": {
+    "@id": "movie-builder",
+    "description": "Assistant 1 description",
+    "model": {
+      "max_tokens": 1000,
+      "name": "gpt-4o",
+      "temperature": 0.5,
+    },
+    "name": "Movie builder",
+    "skills": {
+      "skill": [
+        {
+          "@ref": "tests/basic/artifacts/world-building-skill.xml",
+        },
+        {
+          "description": "Building a movie scenario means
+            creating a story that takes place in
+            a world with certain characters, 
+            plot lines and themes. 
+            The world can be a fantasy world, 
+            a historical period, a real world city, 
+            or any other setting imaginable. 
+            The story can be a romance, a thriller, 
+            a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.",
+          "name": "Movie building skill",
+        },
+      ],
+    },
+    "workflows": {
+      "workflow": [
+        {
+          "@id": "movie-ideas",
+          "description": "Workflow 2 description",
+          "input": {
+            "description": "The genre of the movie",
+            "name": "Movie idea genre",
+            "schema": "{
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }",
+          },
+          "name": "Movie ideas",
+          "steps": {
+            "step": [
+              {
+                "@id": "ideas-generation",
+                "output": {
+                  "@id": "ideas",
+                  "name": "Movie ideas",
+                  "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+                },
+                "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+              },
+            ],
+          },
+        },
+      ],
+    },
+  },
+  "skills": [
+    Skill {
+      "description": "A skill that allows you to build a world",
+      "name": "World building",
+      "node": {
+        "@id": "skill1",
+        "description": "A skill that allows you to build a world",
+        "name": "World building",
+        "workflows": {
+          "workflow": [
+            {
+              "@id": "character-building",
+              "description": "A workflow that allows you to build a character with a given name",
+              "input": {
+                "description": "Input description",
+                "name": "Human name",
+                "schema": "{
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "surnamesLength": {
+                "type": "number"
+              }
+            }
+          }",
+              },
+              "name": "Character building",
+              "steps": {
+                "step": [
+                  {
+                    "@id": "surname-generation",
+                    "description": "Surname generation step",
+                    "name": "Surname generation",
+                    "output": {
+                      "@id": "surnames",
+                      "name": "Surnames",
+                      "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                    },
+                    "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+                  },
+                  {
+                    "@id": "surname-selection",
+                    "description": "Surname selection step",
+                    "name": "Surname selection",
+                    "output": {
+                      "@id": "surname",
+                      "name": "Surname",
+                      "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                    },
+                    "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+                  },
+                  {
+                    "@id": "character-generation",
+                    "description": "Character generation step",
+                    "name": "Character generation",
+                    "output": {
+                      "@id": "character",
+                      "name": "Character",
+                      "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                    },
+                    "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      "parent": [Circular],
+      "skill": {
+        "@ref": "tests/basic/artifacts/world-building-skill.xml",
+      },
+      "workflows": [
+        Workflow {
+          "description": "A workflow that allows you to build a character with a given name",
+          "name": "Character building",
+          "node": {
+            "@id": "character-building",
+            "description": "A workflow that allows you to build a character with a given name",
+            "input": {
+              "description": "Input description",
+              "name": "Human name",
+              "schema": "{
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "surnamesLength": {
+                "type": "number"
+              }
+            }
+          }",
+            },
+            "name": "Character building",
+            "steps": {
+              "step": [
+                {
+                  "@id": "surname-generation",
+                  "description": "Surname generation step",
+                  "name": "Surname generation",
+                  "output": {
+                    "@id": "surnames",
+                    "name": "Surnames",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+                },
+                {
+                  "@id": "surname-selection",
+                  "description": "Surname selection step",
+                  "name": "Surname selection",
+                  "output": {
+                    "@id": "surname",
+                    "name": "Surname",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+                },
+                {
+                  "@id": "character-generation",
+                  "description": "Character generation step",
+                  "name": "Character generation",
+                  "output": {
+                    "@id": "character",
+                    "name": "Character",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+                },
+              ],
+            },
+          },
+          "parent": [Circular],
+          "steps": [
+            Step {
+              "description": "Surname generation step",
+              "input": undefined,
+              "name": "Surname generation",
+              "node": {
+                "@id": "surname-generation",
+                "description": "Surname generation step",
+                "name": "Surname generation",
+                "output": {
+                  "@id": "surnames",
+                  "name": "Surnames",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                },
+                "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+              },
+              "output": Output {
+                "description": undefined,
+                "name": "Surnames",
+                "output": {
+                  "@id": "surnames",
+                  "name": "Surnames",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                },
+                "schema": {
+                  "properties": {
+                    "surnames": {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+              "parent": [Circular],
+              "prompt": Prompt {
+                "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+                "variables": [
+                  "\${surnamesLength}",
+                  "\${name}",
+                ],
+              },
+              "step": {
+                "@id": "surname-generation",
+                "description": "Surname generation step",
+                "name": "Surname generation",
+                "output": {
+                  "@id": "surnames",
+                  "name": "Surnames",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                },
+                "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+              },
+            },
+            Step {
+              "description": "Surname selection step",
+              "input": undefined,
+              "name": "Surname selection",
+              "node": {
+                "@id": "surname-selection",
+                "description": "Surname selection step",
+                "name": "Surname selection",
+                "output": {
+                  "@id": "surname",
+                  "name": "Surname",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+              },
+              "output": Output {
+                "description": undefined,
+                "name": "Surname",
+                "output": {
+                  "@id": "surname",
+                  "name": "Surname",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "schema": {
+                  "properties": {
+                    "surname": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+              "parent": [Circular],
+              "prompt": Prompt {
+                "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+                "variables": [
+                  "\${name}",
+                  "\${surnames}",
+                ],
+              },
+              "step": {
+                "@id": "surname-selection",
+                "description": "Surname selection step",
+                "name": "Surname selection",
+                "output": {
+                  "@id": "surname",
+                  "name": "Surname",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+              },
+            },
+            Step {
+              "description": "Character generation step",
+              "input": undefined,
+              "name": "Character generation",
+              "node": {
+                "@id": "character-generation",
+                "description": "Character generation step",
+                "name": "Character generation",
+                "output": {
+                  "@id": "character",
+                  "name": "Character",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+              },
+              "output": Output {
+                "description": undefined,
+                "name": "Character",
+                "output": {
+                  "@id": "character",
+                  "name": "Character",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "schema": {
+                  "properties": {
+                    "character": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+              "parent": [Circular],
+              "prompt": Prompt {
+                "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+                "variables": [
+                  "\${name}",
+                  "\${surname}",
+                ],
+              },
+              "step": {
+                "@id": "character-generation",
+                "description": "Character generation step",
+                "name": "Character generation",
+                "output": {
+                  "@id": "character",
+                  "name": "Character",
+                  "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                },
+                "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+              },
+            },
+          ],
+          "workflow": {
+            "@id": "character-building",
+            "description": "A workflow that allows you to build a character with a given name",
+            "input": {
+              "description": "Input description",
+              "name": "Human name",
+              "schema": "{
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "surnamesLength": {
+                "type": "number"
+              }
+            }
+          }",
+            },
+            "name": "Character building",
+            "steps": {
+              "step": [
+                {
+                  "@id": "surname-generation",
+                  "description": "Surname generation step",
+                  "name": "Surname generation",
+                  "output": {
+                    "@id": "surnames",
+                    "name": "Surnames",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "surnames": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Produce \${surnamesLength} surnames that sound good with the name: \${name}",
+                },
+                {
+                  "@id": "surname-selection",
+                  "description": "Surname selection step",
+                  "name": "Surname selection",
+                  "output": {
+                    "@id": "surname",
+                    "name": "Surname",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "surname": {
+                    "type": "string"
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Given the name: \${name} select one of the surnames: \${surnames}",
+                },
+                {
+                  "@id": "character-generation",
+                  "description": "Character generation step",
+                  "name": "Character generation",
+                  "output": {
+                    "@id": "character",
+                    "name": "Character",
+                    "schema": "{
+                "type": "object",
+                "properties": {
+                  "character": {
+                    "type": "string"
+                  }
+                }
+              }",
+                  },
+                  "prompt": "Generate a character with the name: \${name} and the surname: \${surname}",
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    Skill {
+      "description": "Building a movie scenario means
+            creating a story that takes place in
+            a world with certain characters, 
+            plot lines and themes. 
+            The world can be a fantasy world, 
+            a historical period, a real world city, 
+            or any other setting imaginable. 
+            The story can be a romance, a thriller, 
+            a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.",
+      "name": "Movie building skill",
+      "node": {
+        "description": "Building a movie scenario means
+            creating a story that takes place in
+            a world with certain characters, 
+            plot lines and themes. 
+            The world can be a fantasy world, 
+            a historical period, a real world city, 
+            or any other setting imaginable. 
+            The story can be a romance, a thriller, 
+            a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.",
+        "name": "Movie building skill",
+      },
+      "parent": [Circular],
+      "skill": {
+        "description": "Building a movie scenario means
+            creating a story that takes place in
+            a world with certain characters, 
+            plot lines and themes. 
+            The world can be a fantasy world, 
+            a historical period, a real world city, 
+            or any other setting imaginable. 
+            The story can be a romance, a thriller, 
+            a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.",
+        "name": "Movie building skill",
+      },
+      "workflows": undefined,
+    },
+  ],
+  "workflows": [
+    Workflow {
+      "description": "Workflow 2 description",
+      "name": "Movie ideas",
+      "node": {
+        "@id": "movie-ideas",
+        "description": "Workflow 2 description",
+        "input": {
+          "description": "The genre of the movie",
+          "name": "Movie idea genre",
+          "schema": "{
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }",
+        },
+        "name": "Movie ideas",
+        "steps": {
+          "step": [
+            {
+              "@id": "ideas-generation",
+              "output": {
+                "@id": "ideas",
+                "name": "Movie ideas",
+                "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+              },
+              "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+            },
+          ],
+        },
+      },
+      "parent": undefined,
+      "steps": [
+        Step {
+          "description": undefined,
+          "input": undefined,
+          "name": undefined,
+          "node": {
+            "@id": "ideas-generation",
+            "output": {
+              "@id": "ideas",
+              "name": "Movie ideas",
+              "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+            },
+            "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+          },
+          "output": Output {
+            "description": undefined,
+            "name": "Movie ideas",
+            "output": {
+              "@id": "ideas",
+              "name": "Movie ideas",
+              "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+            },
+            "schema": {
+              "properties": {
+                "ideas": {
+                  "items": {
+                    "type": "string",
+                  },
+                  "type": "array",
+                },
+              },
+              "type": "object",
+            },
+          },
+          "parent": undefined,
+          "prompt": Prompt {
+            "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+            "variables": [
+              "\${genre}",
+            ],
+          },
+          "step": {
+            "@id": "ideas-generation",
+            "output": {
+              "@id": "ideas",
+              "name": "Movie ideas",
+              "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+            },
+            "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+          },
+        },
+      ],
+      "workflow": {
+        "@id": "movie-ideas",
+        "description": "Workflow 2 description",
+        "input": {
+          "description": "The genre of the movie",
+          "name": "Movie idea genre",
+          "schema": "{
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }",
+        },
+        "name": "Movie ideas",
+        "steps": {
+          "step": [
+            {
+              "@id": "ideas-generation",
+              "output": {
+                "@id": "ideas",
+                "name": "Movie ideas",
+                "schema": "{
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }",
+              },
+              "prompt": "generate 10 movie ideas for \${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.",
+            },
+          ],
+        },
+      },
+    },
+  ],
+}
+`;
+
+exports[`assistant starts workflow 1`] = `
+[
+  {
+    "data": {
+      "surnames": [
+        "Doe",
+        "Smith",
+      ],
+    },
+    "prompt": "Produce 2 surnames that sound good with the name: John",
+  },
+  {
+    "data": {
+      "surname": "Doe",
+    },
+    "prompt": "Given the name: John select one of the surnames: Doe,Smith",
+  },
+  {
+    "data": {
+      "character": "John Doe",
+    },
+    "prompt": "Generate a character with the name: John and the surname: Doe",
+  },
+]
+`;

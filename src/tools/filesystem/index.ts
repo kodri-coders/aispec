@@ -37,7 +37,9 @@ async function validatePath(requestedPath: string): Promise<string> {
       }
       return absolute;
     } catch {
-      throw new Error(`Parent directory does not exist: ${parentDir}`);
+      // Create parent directory
+      await fs.mkdir(parentDir, { recursive: true });
+      return absolute;
     }
   }
 }
@@ -65,12 +67,12 @@ const readFileTool: Tool = {
 const writeFileTool = {
   id: 'fs_write_file',
   name: 'Write File',
-  description: 'Creates or rewrites files in the artifacts directory',
+  description: 'Creates or rewrites files',
   parameters: [
     {
       name: 'path',
       type: 'string',
-      description: 'The name of the file to create/update (relative to artifacts directory)',
+      description: 'The name of the file to create/update',
       required: true,
     },
     {

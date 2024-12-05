@@ -1,0 +1,73 @@
+<assistant id="movie-builder">
+    <name>Movie builder</name>
+    <description>Assistant 1 description</description>
+    <model>
+        <name>gpt-4o</name>
+        <temperature>0.5</temperature>
+        <max_tokens>1000</max_tokens>
+    </model>
+    <skills>
+        <skill ref="tests/basic/artifacts/world-building-skill.xml" />
+        <skill>
+            <name>Movie building skill</name>
+            <description>
+            Building a movie scenario means
+            creating a story that takes place in
+            a world with certain characters, 
+            plot lines and themes. 
+            The world can be a fantasy world, 
+            a historical period, a real world city, 
+            or any other setting imaginable. 
+            The story can be a romance, a thriller, 
+            a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.
+
+            </description>
+        </skill>
+    </skills>
+    <workflows>
+        <workflow id="movie-ideas">
+            <name>Movie ideas</name>
+            <description>Workflow 2 description</description>
+            <input>
+                <name>Movie idea genre</name>
+                <description>The genre of the movie</description>
+                <schema>
+                    {
+                        "type": "object",
+                        "properties": {
+                            "genre": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                </schema>
+            </input>
+            <steps>
+                <step id="ideas-generation">
+                    <prompt>
+                    generate 10 movie ideas for ${genre}. 
+                    Create a story that takes place in a 
+                    world with certain characters, plot lines and themes.
+                    </prompt>
+                    <output id="ideas">
+                        <name>Movie ideas</name>
+                        <schema>
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "ideas": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        </schema>
+                    </output>
+                </step>
+            </steps>
+        </workflow>
+    </workflows>
+
+</assistant>
