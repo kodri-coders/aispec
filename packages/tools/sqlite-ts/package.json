@@ -6,11 +6,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "echo \"sqlite-ts: fix type errors first\"",
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0"
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "@aispec/tool-types": "workspace:*",

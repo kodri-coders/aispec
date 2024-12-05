@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { Tool } from "@aispec/tool-types";
 
 // Response interfaces
 interface GoogleMapsResponse {
@@ -139,108 +140,110 @@ function getApiKey(): string {
 const GOOGLE_MAPS_API_KEY = getApiKey();
 
 const geocodeTool: Tool = {
-  id: 'maps_geocode',
-  name: 'Google Maps Geocode',
-  description: 'Convert an address to coordinates',
+  id: "maps_geocode",
+  name: "Google Maps Geocode",
+  description: "Convert an address to coordinates",
   parameters: [
     {
-      name: 'address',
-      type: 'string',
-      description: 'Address to geocode',
+      name: "address",
+      type: "string",
+      description: "Address to geocode",
       required: true,
-    }
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
     const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
     url.searchParams.append("address", params.address);
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as GeocodeResponse;
+    const data = (await response.json()) as GeocodeResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Geocoding failed: ${data.error_message || data.status}`
+        error: `Geocoding failed: ${data.error_message || data.status}`,
       });
     }
 
     return JSON.stringify({
       location: data.results[0].geometry.location,
       formatted_address: data.results[0].formatted_address,
-      place_id: data.results[0].place_id
+      place_id: data.results[0].place_id,
     });
   },
 };
 
 const reverseGeocodeTool: Tool = {
-  id: 'maps_reverse_geocode',
-  name: 'Google Maps Reverse Geocode',
-  description: 'Convert coordinates to an address',
+  id: "maps_reverse_geocode",
+  name: "Google Maps Reverse Geocode",
+  description: "Convert coordinates to an address",
   parameters: [
     {
-      name: 'lat',
-      type: 'number',
-      description: 'Latitude coordinate',
+      name: "lat",
+      type: "number",
+      description: "Latitude coordinate",
       required: true,
     },
     {
-      name: 'lng',
-      type: 'number',
-      description: 'Longitude coordinate',
+      name: "lng",
+      type: "number",
+      description: "Longitude coordinate",
       required: true,
-    }
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
     const url = new URL("https://maps.googleapis.com/maps/api/geocode/json");
     url.searchParams.append("latlng", `${params.lat},${params.lng}`);
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as GeocodeResponse;
+    const data = (await response.json()) as GeocodeResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Reverse geocoding failed: ${data.error_message || data.status}`
+        error: `Reverse geocoding failed: ${data.error_message || data.status}`,
       });
     }
 
     return JSON.stringify({
       formatted_address: data.results[0].formatted_address,
       place_id: data.results[0].place_id,
-      address_components: data.results[0].address_components
+      // address_components: data.results[0].address_components,
     });
   },
 };
 
 const searchPlacesTool: Tool = {
-  id: 'maps_search_places',
-  name: 'Google Maps Search Places',
-  description: 'Search for places by text query',
+  id: "maps_search_places",
+  name: "Google Maps Search Places",
+  description: "Search for places by text query",
   parameters: [
     {
-      name: 'query',
-      type: 'string',
-      description: 'Search query for places',
+      name: "query",
+      type: "string",
+      description: "Search query for places",
       required: true,
     },
     {
-      name: 'location',
-      type: 'string',
-      description: 'Location to search around (address or lat,lng)',
+      name: "location",
+      type: "string",
+      description: "Location to search around (address or lat,lng)",
       required: false,
     },
     {
-      name: 'radius',
-      type: 'number',
-      description: 'Search radius in meters',
+      name: "radius",
+      type: "number",
+      description: "Search radius in meters",
       required: false,
-    }
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
-    const url = new URL("https://maps.googleapis.com/maps/api/place/textsearch/json");
+    const url = new URL(
+      "https://maps.googleapis.com/maps/api/place/textsearch/json",
+    );
     url.searchParams.append("query", params.query);
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
@@ -252,11 +255,11 @@ const searchPlacesTool: Tool = {
     }
 
     const response = await fetch(url.toString());
-    const data = await response.json() as PlacesSearchResponse;
+    const data = (await response.json()) as PlacesSearchResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Place search failed: ${data.error_message || data.status}`
+        error: `Place search failed: ${data.error_message || data.status}`,
       });
     }
 
@@ -267,36 +270,38 @@ const searchPlacesTool: Tool = {
         location: place.geometry.location,
         place_id: place.place_id,
         rating: place.rating,
-        types: place.types
-      }))
+        types: place.types,
+      })),
     });
   },
 };
 
 const placeDetailsTool: Tool = {
-  id: 'maps_place_details',
-  name: 'Google Maps Place Details',
-  description: 'Get detailed information about a place',
+  id: "maps_place_details",
+  name: "Google Maps Place Details",
+  description: "Get detailed information about a place",
   parameters: [
     {
-      name: 'place_id',
-      type: 'string',
-      description: 'Google Places ID of the location',
+      name: "place_id",
+      type: "string",
+      description: "Google Places ID of the location",
       required: true,
-    }
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
-    const url = new URL("https://maps.googleapis.com/maps/api/place/details/json");
+    const url = new URL(
+      "https://maps.googleapis.com/maps/api/place/details/json",
+    );
     url.searchParams.append("place_id", params.place_id);
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as PlaceDetailsResponse;
+    const data = (await response.json()) as PlaceDetailsResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Place details request failed: ${data.error_message || data.status}`
+        error: `Place details request failed: ${data.error_message || data.status}`,
       });
     }
 
@@ -308,50 +313,52 @@ const placeDetailsTool: Tool = {
       website: data.result.website,
       rating: data.result.rating,
       reviews: data.result.reviews,
-      opening_hours: data.result.opening_hours
+      opening_hours: data.result.opening_hours,
     });
   },
 };
 
 const distanceMatrixTool: Tool = {
-  id: 'maps_distance_matrix',
-  name: 'Google Maps Distance Matrix',
-  description: 'Calculate travel distance and time between points',
+  id: "maps_distance_matrix",
+  name: "Google Maps Distance Matrix",
+  description: "Calculate travel distance and time between points",
   parameters: [
     {
-      name: 'origins',
-      type: 'string',
-      description: 'Starting points (addresses or lat,lng)',
+      name: "origins",
+      type: "string",
+      description: "Starting points (addresses or lat,lng)",
       required: true,
     },
     {
-      name: 'destinations',
-      type: 'string',
-      description: 'Ending points (addresses or lat,lng)',
+      name: "destinations",
+      type: "string",
+      description: "Ending points (addresses or lat,lng)",
       required: true,
     },
     {
-      name: 'mode',
-      type: 'string',
-      description: 'Travel mode (driving, walking, bicycling, transit)',
+      name: "mode",
+      type: "string",
+      description: "Travel mode (driving, walking, bicycling, transit)",
       required: false,
-      defaultValue: 'driving'
-    }
+      defaultValue: "driving",
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
-    const url = new URL("https://maps.googleapis.com/maps/api/distancematrix/json");
+    const url = new URL(
+      "https://maps.googleapis.com/maps/api/distancematrix/json",
+    );
     url.searchParams.append("origins", params.origins);
     url.searchParams.append("destinations", params.destinations);
-    url.searchParams.append("mode", params.mode || 'driving');
+    url.searchParams.append("mode", params.mode || "driving");
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as DistanceMatrixResponse;
+    const data = (await response.json()) as DistanceMatrixResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Distance matrix request failed: ${data.error_message || data.status}`
+        error: `Distance matrix request failed: ${data.error_message || data.status}`,
       });
     }
 
@@ -362,37 +369,37 @@ const distanceMatrixTool: Tool = {
         elements: row.elements.map((element) => ({
           status: element.status,
           duration: element.duration,
-          distance: element.distance
-        }))
-      }))
+          distance: element.distance,
+        })),
+      })),
     });
   },
 };
 
 const elevationTool: Tool = {
-  id: 'maps_elevation',
-  name: 'Google Maps Elevation',
-  description: 'Get elevation data for locations',
+  id: "maps_elevation",
+  name: "Google Maps Elevation",
+  description: "Get elevation data for locations",
   parameters: [
     {
-      name: 'locations',
-      type: 'string',
-      description: 'Locations to get elevation for (lat,lng pairs)',
+      name: "locations",
+      type: "string",
+      description: "Locations to get elevation for (lat,lng pairs)",
       required: true,
-    }
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
     const url = new URL("https://maps.googleapis.com/maps/api/elevation/json");
     url.searchParams.append("locations", params.locations);
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as ElevationResponse;
+    const data = (await response.json()) as ElevationResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Elevation request failed: ${data.error_message || data.status}`
+        error: `Elevation request failed: ${data.error_message || data.status}`,
       });
     }
 
@@ -400,51 +407,51 @@ const elevationTool: Tool = {
       results: data.results.map((result) => ({
         elevation: result.elevation,
         location: result.location,
-        resolution: result.resolution
-      }))
+        resolution: result.resolution,
+      })),
     });
   },
 };
 
 const directionsTool: Tool = {
-  id: 'maps_directions',
-  name: 'Google Maps Directions',
-  description: 'Get directions between two points',
+  id: "maps_directions",
+  name: "Google Maps Directions",
+  description: "Get directions between two points",
   parameters: [
     {
-      name: 'origin',
-      type: 'string',
-      description: 'Starting point address or coordinates',
+      name: "origin",
+      type: "string",
+      description: "Starting point address or coordinates",
       required: true,
     },
     {
-      name: 'destination',
-      type: 'string',
-      description: 'Ending point address or coordinates',
+      name: "destination",
+      type: "string",
+      description: "Ending point address or coordinates",
       required: true,
     },
     {
-      name: 'mode',
-      type: 'string',
-      description: 'Travel mode (driving, walking, bicycling, transit)',
+      name: "mode",
+      type: "string",
+      description: "Travel mode (driving, walking, bicycling, transit)",
       required: false,
-      defaultValue: 'driving'
-    }
+      defaultValue: "driving",
+    },
   ],
-  returnType: 'string',
+  returnType: "string",
   handler: async (params: any) => {
     const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
     url.searchParams.append("origin", params.origin);
     url.searchParams.append("destination", params.destination);
-    url.searchParams.append("mode", params.mode || 'driving');
+    url.searchParams.append("mode", params.mode || "driving");
     url.searchParams.append("key", GOOGLE_MAPS_API_KEY);
 
     const response = await fetch(url.toString());
-    const data = await response.json() as DirectionsResponse;
+    const data = (await response.json()) as DirectionsResponse;
 
     if (data.status !== "OK") {
       return JSON.stringify({
-        error: `Directions request failed: ${data.error_message || data.status}`
+        error: `Directions request failed: ${data.error_message || data.status}`,
       });
     }
 
@@ -457,9 +464,9 @@ const directionsTool: Tool = {
           instructions: step.html_instructions,
           distance: step.distance,
           duration: step.duration,
-          travel_mode: step.travel_mode
-        }))
-      }))
+          travel_mode: step.travel_mode,
+        })),
+      })),
     });
   },
 };
@@ -471,7 +478,7 @@ const tools = [
   placeDetailsTool,
   distanceMatrixTool,
   elevationTool,
-  directionsTool
+  directionsTool,
 ];
 
 export { tools };

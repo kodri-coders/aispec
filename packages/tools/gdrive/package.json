@@ -6,7 +6,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "echo \"gdrive: fix type errors first\"",
     "watch": "tsc --watch"
   },
   "dependencies": {

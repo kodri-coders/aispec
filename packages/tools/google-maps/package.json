@@ -2,7 +2,7 @@
   "name": "@aispec/tool-google-maps",
   "version": "0.0.1",
   "type": "module",
-    "files": [
+  "files": [
     "dist"
   ],
   "scripts": {
@@ -15,6 +15,7 @@
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
+    "@aispec/tool-types": "workspace:*",
     "typescript": "^5.6.2"
   }
 }

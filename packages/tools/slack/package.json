@@ -10,7 +10,8 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0"
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "@slack/web-api": "^7.7.0"
   },
   "devDependencies": {
     "@aispec/tool-types": "workspace:*",

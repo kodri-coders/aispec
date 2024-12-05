@@ -5,7 +5,10 @@ export interface ToolParameter {
   type: "string" | "number" | "boolean" | "array" | "object";
   description: string;
   required?: boolean;
+  // TODO: Figure out if the following properties are needed
   defaultValue?: any;
+  items?: any;
+  schema?: any;
 }
 
 export interface Tool {

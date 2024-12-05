@@ -80,7 +80,7 @@ class TreeSitterManager {
     let hasChildren = cursor.gotoFirstChild();
 
     while (hasChildren) {
-      children.push(this.formatNode(cursor.currentNode(), indent + "  "));
+      children.push(this.formatNode(cursor.currentNode, indent + "  "));
       hasChildren = cursor.gotoNextSibling();
     }
 
@@ -91,7 +91,7 @@ class TreeSitterManager {
         : ` (${node.startPosition.column}-${node.endPosition.column})`,
     ];
 
-    if (node.isNamed()) {
+    if (node.isNamed) {
       nodeInfo.push(" [named]");
     }
 
@@ -109,7 +109,7 @@ class TreeSitterManager {
     let hasChildren = cursor.gotoFirstChild();
 
     while (hasChildren) {
-      this.collectNodeTypes(cursor.currentNode(), types);
+      this.collectNodeTypes(cursor.currentNode, types);
       hasChildren = cursor.gotoNextSibling();
     }
 
@@ -162,7 +162,7 @@ class TreeSitterManager {
     let hasChildren = cursor.gotoFirstChild();
 
     while (hasChildren) {
-      count += this.countNodes(cursor.currentNode());
+      count += this.countNodes(cursor.currentNode);
       hasChildren = cursor.gotoNextSibling();
     }
 
@@ -244,7 +244,7 @@ class TreeSitterManager {
             "**/.git/**",
           ],
         });
-        allFiles.push(...files);
+        allFiles.push(...(files as string[]));
       }
     }
 

@@ -125,8 +125,8 @@ async function main() {
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Build the core project: `cd packages/core && pnpm build`
-4. Run tests: `cd packages/core && pnpm test`
+3. Build all projects: `pnpm -r build`
+4. Run core tests: `cd packages/core && pnpm test`
 
 ## License
 

@@ -1,12 +1,10 @@
 import { Tool } from "@aispec/tool-types";
 import { Database } from "sqlite3";
 import { promisify } from "util";
-import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs/promises";
 
 // Define the path to the SQLite database
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, "database.sqlite");
 
 // Type definitions

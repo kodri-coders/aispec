@@ -10,7 +10,8 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "0.6.0"
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "axios": "^1.7.9"
   },
   "devDependencies": {
     "@aispec/tool-types": "workspace:*",
