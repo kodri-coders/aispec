@@ -3,5 +3,9 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["*.ts", "tests"]
+  "include": [
+    "*.ts",
+    "tests",
+    "src"
+  ]
 }

@@ -1,4 +1,4 @@
-import { Assistant } from "../../index";
+import { Assistant } from "../../src/Assistant";
 import * as path from "path";
 
 const artifactPath = path.join(
