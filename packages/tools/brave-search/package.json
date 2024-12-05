@@ -1,0 +1,21 @@
+{
+  "name": "@aispec/tool-brave-search",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.5.0",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@aispec/tool-types": "workspace:*",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.6.2"
+  }
+}

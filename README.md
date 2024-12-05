@@ -11,10 +11,15 @@ A TypeScript framework for creating LLM assistants using XML-based configuration
 - Self-prompting capabilities
 - Modular and extensible architecture
 
+## Pre-requisites
+
+- [Node.js (v18 or later)](https://nodejs.org/en/download/package-manager)
+- [pnpm](https://pnpm.io)
+
 ## Installation
 
 ```bash
-npm install assistant-spec
+pnpm install
 ```
 
 ## Usage
@@ -77,21 +82,21 @@ npm install assistant-spec
 ### 3. Implement Tools (TypeScript)
 
 ```typescript
-import { Tool } from 'assistant-spec';
+import { Tool } from "assistant-spec";
 
 const searchTool: Tool = {
-  id: 'search_tool',
-  name: 'Web Search',
-  description: 'Performs a web search',
+  id: "search_tool",
+  name: "Web Search",
+  description: "Performs a web search",
   parameters: [
     {
-      name: 'query',
-      type: 'string',
-      description: 'The search query',
+      name: "query",
+      type: "string",
+      description: "The search query",
       required: true,
     },
   ],
-  returnType: 'array',
+  returnType: "array",
   handler: async (params: { query: string }) => {
     // Implement search logic
     return [`Result for ${params.query}`];
@@ -102,27 +107,26 @@ const searchTool: Tool = {
 ### 4. Use the Assistant
 
 ```typescript
-import { Assistant } from 'assistant-spec';
+import { Assistant } from "assistant-spec";
 
 async function main() {
-  const assistant = await Assistant.fromXML('./search_assistant.xml');
+  const assistant = await Assistant.fromXML("./search_assistant.xml");
   assistant.addTool(searchTool);
 
-  const result = await assistant.executeWorkflow('search_and_summarize', {
-    query: 'TypeScript best practices',
+  const result = await assistant.executeWorkflow("search_and_summarize", {
+    query: "TypeScript best practices",
   });
 
-  console.log('Result:', result);
+  console.log("Result:", result);
 }
 ```
 
 ## Development
 
 1. Clone the repository
-2. Install dependencies: `npm install`
-3. Build the project: `npm run build`
-4. Run tests: `npm test`
-5. Run example: `npm run example`
+2. Install dependencies: `pnpm install`
+3. Build the core project: `cd packages/core && pnpm build`
+4. Run tests: `cd packages/core && pnpm test`
 
 ## License
 

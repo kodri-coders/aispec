@@ -1,0 +1,22 @@
+{
+  "name": "@aispec/tool-github",
+  "version": "0.0.1",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "0.6.0",
+    "@types/node-fetch": "^2.6.12",
+    "node-fetch": "^3.3.2",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@aispec/tool-types": "workspace:*",
+    "typescript": "^5.6.2"
+  }
+}
