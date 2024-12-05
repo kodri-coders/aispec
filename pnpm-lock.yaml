@@ -4,6 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@types/node':
+      specifier: ^22.9.3
+      version: 22.10.1
+    typescript:
+      specifier: ^5.6.2
+      version: 5.7.2
+    zod:
+      specifier: ^3.23.8
+      version: 3.23.8
+
 importers:
 
   packages/core:
@@ -18,7 +30,7 @@ importers:
         specifier: ^4.5.0
         version: 4.5.0
       zod:
-        specifier: ^3.23.8
+        specifier: 'catalog:'
         version: 3.23.8
     devDependencies:
       '@babel/types':
@@ -28,7 +40,7 @@ importers:
         specifier: ^29.5.5
         version: 29.5.14
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       jest:
         specifier: ^29.7.0
@@ -37,7 +49,7 @@ importers:
         specifier: ^29.1.1
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.1))(typescript@5.7.2)
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/brave-search:
@@ -53,10 +65,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^20.10.0
-        version: 20.17.9
+        specifier: 'catalog:'
+        version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/everything:
@@ -68,7 +80,7 @@ importers:
         specifier: ^4.21.1
         version: 4.21.1
       zod:
-        specifier: ^3.23.8
+        specifier: 'catalog:'
         version: 3.23.8
       zod-to-json-schema:
         specifier: ^3.23.5
@@ -81,7 +93,7 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/fetch-ts:
@@ -106,10 +118,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/filesystem:
@@ -128,10 +140,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^20.11.0
-        version: 20.17.9
+        specifier: 'catalog:'
+        version: 22.10.1
       typescript:
-        specifier: ^5.3.3
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/gdrive:
@@ -150,10 +162,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/git:
@@ -166,10 +178,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/github:
@@ -187,7 +199,7 @@ importers:
         specifier: ^3.3.2
         version: 3.3.2
       zod:
-        specifier: ^3.23.8
+        specifier: 'catalog:'
         version: 3.23.8
       zod-to-json-schema:
         specifier: ^3.23.5
@@ -197,7 +209,7 @@ importers:
         specifier: workspace:*
         version: link:../types
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/gitlab-ts:
@@ -213,10 +225,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/google-maps:
@@ -235,7 +247,7 @@ importers:
         specifier: workspace:*
         version: link:../types
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/jira-ts:
@@ -251,10 +263,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/memory:
@@ -267,10 +279,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/postgres:
@@ -289,7 +301,7 @@ importers:
         specifier: ^8.11.10
         version: 8.11.10
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/puppeteer:
@@ -302,7 +314,7 @@ importers:
         version: 23.10.1(typescript@5.7.2)
     devDependencies:
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/python-runner:
@@ -318,10 +330,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/sentry-ts:
@@ -337,10 +349,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/slack:
@@ -356,10 +368,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/sqlite-ts:
@@ -375,10 +387,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/treesitter:
@@ -421,20 +433,20 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/types:
     dependencies:
       zod:
-        specifier: ^3.23.8
+        specifier: 'catalog:'
         version: 3.23.8
     devDependencies:
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
   packages/tools/typescript-runner:
@@ -450,10 +462,10 @@ importers:
         specifier: workspace:*
         version: link:../types
       '@types/node':
-        specifier: ^22.9.3
+        specifier: 'catalog:'
         version: 22.10.1
       typescript:
-        specifier: ^5.6.2
+        specifier: 'catalog:'
         version: 5.7.2
 
 packages:
@@ -936,9 +948,6 @@ packages:
 
   '@types/node-fetch@2.6.12':
     resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
-
-  '@types/node@20.17.9':
-    resolution: {integrity: sha512-0JOXkRyLanfGPE2QRCwgxhzlBAvaRdCNMcvbd7jFfpmD4eEXll7LRwy5ymJmyeZqk7Nh7eD2LeUyQ68BbndmXw==}
 
   '@types/node@22.10.1':
     resolution: {integrity: sha512-qKgsUwfHZV2WCWLAnVP1JqnpE6Im6h3Y0+fYgMTasNQ7V++CBX5OT1as0g0f+OyubbFqhf6XVNIsmN4IIhEgGQ==}
@@ -3019,9 +3028,6 @@ packages:
   unbzip2-stream@1.4.3:
     resolution: {integrity: sha512-mlExGW4w71ebDJviH16lQLtZS32VKqsSfk80GCfUlwT/4/hNRFsoscrF/c++9xinkMzECL1uL9DDwXqFWkruPg==}
 
-  undici-types@6.19.8:
-    resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
-
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
@@ -3759,7 +3765,7 @@ snapshots:
 
   '@slack/logger@4.0.0':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
 
   '@slack/types@2.14.0': {}
 
@@ -3767,7 +3773,7 @@ snapshots:
     dependencies:
       '@slack/logger': 4.0.0
       '@slack/types': 2.14.0
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
       '@types/retry': 0.12.0
       axios: 1.7.9
       eventemitter3: 5.0.1
@@ -3809,17 +3815,17 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
 
   '@types/diff-match-patch@1.0.36': {}
 
   '@types/express-serve-static-core@5.0.2':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
       '@types/qs': 6.9.17
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -3856,12 +3862,8 @@ snapshots:
 
   '@types/node-fetch@2.6.12':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
       form-data: 4.0.1
-
-  '@types/node@20.17.9':
-    dependencies:
-      undici-types: 6.19.8
 
   '@types/node@22.10.1':
     dependencies:
@@ -3869,7 +3871,7 @@ snapshots:
 
   '@types/pg@8.11.10':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
       pg-protocol: 1.7.0
       pg-types: 4.0.2
 
@@ -3882,12 +3884,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
       '@types/send': 0.17.4
 
   '@types/stack-utils@2.0.3': {}
@@ -3900,7 +3902,7 @@ snapshots:
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 20.17.9
+      '@types/node': 22.10.1
     optional: true
 
   abbrev@1.1.1:
@@ -6287,8 +6289,6 @@ snapshots:
     dependencies:
       buffer: 5.7.1
       through: 2.3.8
-
-  undici-types@6.19.8: {}
 
   undici-types@6.20.0: {}
 
