@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           targetNamespace="http://www.assistant-spec.org/common"
+           xmlns:common="http://www.assistant-spec.org/common"
+           elementFormDefault="qualified">
+
+    <xs:complexType name="nameDescriptionType">
+        <xs:sequence>
+            <xs:element name="n" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="modelType">
+        <xs:sequence>
+            <xs:element name="n" type="xs:string"/>
+            <xs:element name="temperature" type="xs:decimal" minOccurs="0"/>
+            <xs:element name="max_tokens" type="xs:integer" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="schemaContainerType">
+        <xs:sequence>
+            <xs:element name="schema" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="inputType">
+        <xs:complexContent>
+            <xs:extension base="common:nameDescriptionType">
+                <xs:sequence>
+                    <xs:element name="schema" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="outputType">
+        <xs:complexContent>
+            <xs:extension base="common:nameDescriptionType">
+                <xs:sequence>
+                    <xs:element name="schema" type="xs:string"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="stepType">
+        <xs:sequence>
+            <xs:element name="model" type="common:modelType" minOccurs="0"/>
+            <xs:element name="n" type="xs:string" minOccurs="0"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="prompt" type="xs:string"/>
+            <xs:element name="output">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="common:outputType">
+                            <xs:sequence>
+                                <xs:element name="o" type="xs:string" fixed=""/>
+                            </xs:sequence>
+                            <xs:attribute name="id" type="xs:string" use="required"/>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="workflowType">
+        <xs:sequence>
+            <xs:element name="n" type="xs:string"/>
+            <xs:element name="description" type="xs:string" minOccurs="0"/>
+            <xs:element name="input" type="common:inputType" minOccurs="0"/>
+            <xs:element name="steps">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="step" type="common:stepType" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required"/>
+    </xs:complexType>
+
+</xs:schema>

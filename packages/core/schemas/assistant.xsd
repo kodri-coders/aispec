@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.assistant-spec.org/assistant"
+           xmlns:assistant="http://www.assistant-spec.org/assistant"
+           xmlns:common="http://www.assistant-spec.org/common"
+           xmlns:skill="http://www.assistant-spec.org/skill"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.assistant-spec.org/common" 
+               schemaLocation="common.xsd"/>
+    <xs:import namespace="http://www.assistant-spec.org/skill" 
+               schemaLocation="skill.xsd"/>
+
+    <xs:element name="assistant">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="model" type="common:modelType"/>
+                <xs:element name="skills">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:choice maxOccurs="unbounded">
+                                <xs:element name="skill">
+                                    <xs:complexType>
+                                        <xs:attribute name="ref" type="xs:string" use="required"/>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element ref="skill:skill"/>
+                            </xs:choice>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="workflows">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="workflow" type="common:workflowType" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

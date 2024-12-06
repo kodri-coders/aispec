@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.assistant-spec.org/skill"
+           xmlns:skill="http://www.assistant-spec.org/skill"
+           xmlns:common="http://www.assistant-spec.org/common"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://www.assistant-spec.org/common" 
+               schemaLocation="common.xsd"/>
+
+    <xs:element name="skill">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="n" type="xs:string"/>
+                <xs:element name="description" type="xs:string"/>
+                <xs:element name="workflows">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="workflow" type="common:workflowType" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
