@@ -18,13 +18,12 @@ export class Skill extends XMLBase {
 
   constructor(
     public skill: ISkillConstructor,
-    private parent?: Assistant,
   ) {
     super(skill);
     this.name = this.node.name;
     this.description = this.node.description;
     this.workflows = this.node.workflows?.workflow.map((workflow: any) => {
-      return new Workflow(workflow, parent);
+      return new Workflow(workflow);
     });
 
     this.workflows?.forEach((workflow: any) => {

@@ -22,7 +22,6 @@ export class Step extends XMLBase {
 
   constructor(
     public step: IStepConstructor,
-    private parent?: Assistant,
   ) {
     super(step);
     this.name = this.node.name;
@@ -30,6 +29,7 @@ export class Step extends XMLBase {
     this.input = this.node.input && new Input(this.node.input);
     this.prompt = this.node.prompt && new Prompt(this.node.prompt);
     this.output = this.node.output && new Output(this.node.output);
+    this.model = this.node.model;
   }
 
   getPrompt(input?: any): any {

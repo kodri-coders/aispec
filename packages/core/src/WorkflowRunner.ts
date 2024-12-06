@@ -46,10 +46,10 @@ export class WorkflowRunner extends EventEmitter {
 
   generateResponse(prompt: string): any {
     const step = this.workflow.steps[this.currentStep];
-    const model = step.model || this.workflow.model || this.assistant.model;
+    const model = step.node.model || this.workflow.node.model || this.assistant.node.model;
     const toolSchema = step.output.schema;
     const responseTool = {
-      description: step.output.description || step.output.name,
+      description: 'Response Tool',
       parameters: [toolSchema],
       execute: async (params: any) => {
         this.setContext(params);
@@ -58,7 +58,13 @@ export class WorkflowRunner extends EventEmitter {
       },
     };
     const systemPrompt = this.toXML(this.assistant.node);
-    this.callLLM(systemPrompt, prompt, [responseTool], model);
+    const assistantConfig = {
+      name: this.assistant.name,
+      skills: this.assistant?.skills?.map((s: any) => s.node['@id']),
+    }
+    const response = this.callLLM(systemPrompt, prompt, [responseTool], model);
+    this.history.push({ prompt, response, assistantConfig, model });
+    return response;
   }
 
   toXML(node: any): string {
@@ -80,9 +86,7 @@ export class WorkflowRunner extends EventEmitter {
     const step = this.workflow.steps[this.currentStep];
     const prompt = step.getPrompt(this.context);
     const data = this.generateResponse(prompt);
-    this.history.push({ prompt, data });
     this.setContext(data);
-    console.log({ context: this.context });
     this.emit('step-finished', prompt, data);
   }
 }

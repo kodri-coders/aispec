@@ -7,6 +7,7 @@ interface IAssistantConstructor extends XMLBaseConstructor {
   '@id'?: string;
   name?: string;
   description?: string;
+  model?: any;
   skills?: {
     skill: any[];
   };
@@ -20,6 +21,7 @@ export class Assistant extends XMLBase {
   description?: string;
   workflows?: Workflow[] = [];
   skills?: Skill[] = [];
+  model?: any;
 
   constructor(assistant: IAssistantConstructor | XMLBase) {
     super(assistant);
@@ -28,7 +30,7 @@ export class Assistant extends XMLBase {
     this.model = this.node.model;
 
     this.skills = this.node.skills?.skill.map((skill: any) => {
-      return new Skill(skill, this);
+      return new Skill(skill);
     });
 
     this.workflows = this.node.workflows?.workflow.map((workflow: any) => {
@@ -72,19 +74,19 @@ export class Assistant extends XMLBase {
       assistant: {
         name: this.name,
         description: this.description,
+        model: this.model,
         skills: {
           skill: [],
         },
       },
     };
-
     // Add global skills
     if (this.skills) {
       xmlObj.assistant.skills.skill = this.skills
         .filter((s) => s !== containingSkill)
-        .map((s) => ({ name: s.name, description: s.description }));
+        .map((s) => ({ ...s.node, workflows: undefined }));
     }
-    if (targetWorkflow) {
+    if (targetWorkflow && !containingSkill) {
       xmlObj.assistant.workflows = {
         workflow: [targetWorkflow],
       };
@@ -94,6 +96,6 @@ export class Assistant extends XMLBase {
       xmlObj.assistant.skills.skill.push(containingSkill.node);
     }
 
-    return new WorkflowRunner(new Assistant(xmlObj), targetWorkflow);
+    return new WorkflowRunner(new Assistant(xmlObj.assistant), targetWorkflow);
   }
 }

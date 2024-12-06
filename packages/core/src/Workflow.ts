@@ -24,14 +24,14 @@ export class Workflow extends XMLBase {
 
   constructor(
     public workflow: IWorkflowConstructor,
-    private parent?: Assistant,
   ) {
     super(workflow);
     this.name = this.node.name;
     this.description = this.node.description;
     this.steps = this.node.steps.step.map((step: any) => {
-      return new Step(step, parent);
+      return new Step(step);
     });
+    this.model = this.node.model;
   }
 
   run(input?: any): any {

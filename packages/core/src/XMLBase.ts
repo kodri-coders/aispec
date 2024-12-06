@@ -40,10 +40,12 @@ export class XMLBase {
     });
     const node: any = {};
     Object.keys(this.node).forEach((key) => {
+      console.log(key);
       if (this[key]) {
         node[key] = this.node[key];
       }
     });
+    console.log({node})
     return builder.build(node);
   }
 
