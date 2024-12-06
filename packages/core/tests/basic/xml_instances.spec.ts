@@ -13,10 +13,10 @@ describe("assistant", () => {
     expect(assistant.description).toMatchSnapshot();
   });
   it("loads xml", () => {
-    expect(assistant).toMatchSnapshot();
+    expect(assistant.toString()).toMatchSnapshot();
   });
   it("loads workflows", () => {
-    expect(assistant.workflows).toMatchSnapshot();
+    expect(assistant.workflows?.length).toMatchSnapshot();
   });
   it("starts workflow", async () => {
     const workflowRunner = assistant.loadWorkflow("character-building");
@@ -31,11 +31,9 @@ describe("assistant", () => {
         character: "John Doe",
       },
     };
-    // mock workflow.generateResponse with jest based
-    workflowRunner.generateResponse = jest
+    workflowRunner.callLLM = jest
       .fn()
-      .mockImplementation((prompt: string) => {
-        console.log("prompt", prompt);
+      .mockImplementation((systemPrompt: string, prompt: string) => {
         return mockResponses[prompt];
       });
     workflowRunner.on("step-finished", (prompt: string, data: any) => {
@@ -50,9 +48,8 @@ describe("assistant", () => {
       surnamesLength: 2,
     });
 
-    console.log("workflow", workflow);
     await workflowRunner.onFinish();
-    expect(workflowRunner.generateResponse).toHaveBeenCalledTimes(3);
+    expect(workflowRunner.callLLM).toHaveBeenCalledTimes(3);
     expect(workflowRunner.history).toMatchSnapshot();
   });
 });

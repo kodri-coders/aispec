@@ -1,4 +1,4 @@
-<skill id="skill1">
+<skill id="world-building-skill">
   <name>World building</name>
   <description>A skill that allows you to build a world</description>
   <workflows>
@@ -24,6 +24,11 @@
       </input>
       <steps>
         <step id="surname-generation">
+          <model>
+            <name>gpt-4o</name>
+            <temperature>0.5</temperature>
+            <max_tokens>1000</max_tokens>
+          </model>
           <name>Surname generation</name>
           <description>Surname generation step</description>
           <prompt>

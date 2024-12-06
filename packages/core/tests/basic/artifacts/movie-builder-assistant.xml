@@ -8,7 +8,7 @@
     </model>
     <skills>
         <skill ref="tests/basic/artifacts/world-building-skill.xml" />
-        <skill>
+        <skill id="movie-building-skill">
             <name>Movie building skill</name>
             <description>
             Building a movie scenario means
@@ -44,6 +44,9 @@
             </input>
             <steps>
                 <step id="ideas-generation">
+                    <model>
+                        <name>o1-mini</name>
+                    </model>
                     <prompt>
                     generate 10 movie ideas for ${genre}. 
                     Create a story that takes place in a 
