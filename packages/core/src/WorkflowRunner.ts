@@ -1,6 +1,7 @@
 import { EventEmitter } from 'stream';
 import { Assistant } from './Assistant';
 import { XMLBuilder } from 'fast-xml-parser';
+import { LLMEngine } from './LLMEngine';
 
 export class WorkflowRunner extends EventEmitter {
   currentStep: number = -1;
@@ -42,6 +43,10 @@ export class WorkflowRunner extends EventEmitter {
     console.log('prompt', prompt);
     console.log('tools', tools);
     console.log('model', model);
+    return new LLMEngine(model).generateText({
+      prompt,
+      systemPrompt,
+    });
   }
 
   generateResponse(prompt: string): any {
