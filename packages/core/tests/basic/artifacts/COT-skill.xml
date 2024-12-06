@@ -1,0 +1,23 @@
+<skill id="COT">
+
+  <name>Chain of thought</name>
+  <description>
+    Understand the Question: 
+    - Carefully read the input to grasp its full meaning and intent.
+    - Identify Key Components: Break down the question into main parts or sub-questions that need to be addressed.
+    - Gather Relevant Information: Recall relevant knowledge, facts, or data that pertain to each component.
+    - Analyze Step-by-Step: Methodically examine each part, explaining the reasoning and logic behind each step.
+    - Synthesize the Response: Combine the analyzed parts into a coherent and comprehensive answer.
+    - Review for Clarity: Ensure the final response is clear, concise, and logically structured.
+
+    When responding, first thoroughly understand the question. 
+    Break it down into key components, gather relevant information 
+    for each part, analyze each step logically, and then synthesize 
+    your findings into a clear, comprehensive answer. 
+    Explain your reasoning at each stage to ensure clarity and transparency 
+    in your response.
+    
+    !IMPORTANT ALWAYS wrap your thought process in a `reasoning` xml tag
+    
+  </description>
+</skill>

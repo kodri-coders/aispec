@@ -6,16 +6,10 @@ exports[`assistant loads name and description 2`] = `"Assistant 1 description"`;
 
 exports[`assistant loads workflows 1`] = `1`;
 
-exports[`assistant loads xml 1`] = `
+exports[`assistant starts workflow 1`] = `
 "<name>Movie builder</name>
 <description>Assistant 1 description</description>
-<model>
-  <name>gpt-4o</name>
-  <temperature>0.5</temperature>
-  <max_tokens>1000</max_tokens>
-</model>
 <skills>
-  <skill ref="tests/basic/artifacts/world-building-skill.xml"></skill>
   <skill id="movie-building-skill">
     <name>Movie building skill</name>
     <description>Building a movie scenario means
@@ -28,110 +22,110 @@ exports[`assistant loads xml 1`] = `
             The story can be a romance, a thriller, 
             a sci-fi epic or any other genre. The characters can be humans, animals, aliens, or any other type of being. The plot can be a simple one, like a romance that takes place in a small town, or a complex one, like a multi-layered epic that takes place in a fictional world. The themes can be simple, like love and friendship, or complex, like the nature of reality and the human condition. The movie scenario building skill allows you to explore all of these possibilities and create a unique story that expresses your imagination and creativity.</description>
   </skill>
-</skills>
-<workflows>
-  <workflow id="movie-ideas">
-    <name>Movie ideas</name>
-    <description>Workflow 2 description</description>
-    <input>
-      <name>Movie idea genre</name>
-      <description>The genre of the movie</description>
-      <schema>{
-                        &quot;type&quot;: &quot;object&quot;,
-                        &quot;properties&quot;: {
-                            &quot;genre&quot;: {
-                                &quot;type&quot;: &quot;string&quot;
-                            }
-                        }
-                    }</schema>
-    </input>
-    <steps>
-      <step id="ideas-generation">
-        <model>
-          <name>o1-mini</name>
-        </model>
-        <prompt>generate 10 movie ideas for \${genre}. 
-                    Create a story that takes place in a 
-                    world with certain characters, plot lines and themes.</prompt>
-        <output id="ideas">
-          <name>Movie ideas</name>
-          <schema>{
-                                &quot;type&quot;: &quot;object&quot;,
-                                &quot;properties&quot;: {
-                                    &quot;ideas&quot;: {
-                                        &quot;type&quot;: &quot;array&quot;,
-                                        &quot;items&quot;: {
-                                            &quot;type&quot;: &quot;string&quot;
-                                        }
-                                    }
-                                }
-                            }</schema>
-        </output>
-      </step>
-    </steps>
-  </workflow>
-</workflows>
-"
-`;
+  <skill id="world-building-skill">
+    <name>World building</name>
+    <description>A skill that allows you to build a world</description>
+    <skills>
+      <skill id="COT">
+        <name>Chain of thought</name>
+        <description>Understand the Question: 
+    - Carefully read the input to grasp its full meaning and intent.
+    - Identify Key Components: Break down the question into main parts or sub-questions that need to be addressed.
+    - Gather Relevant Information: Recall relevant knowledge, facts, or data that pertain to each component.
+    - Analyze Step-by-Step: Methodically examine each part, explaining the reasoning and logic behind each step.
+    - Synthesize the Response: Combine the analyzed parts into a coherent and comprehensive answer.
+    - Review for Clarity: Ensure the final response is clear, concise, and logically structured.
 
-exports[`assistant starts workflow 1`] = `
-[
-  {
-    "assistantConfig": {
-      "name": "Movie builder",
-      "skills": [
-        "movie-building-skill",
-        "world-building-skill",
-      ],
-    },
-    "model": {
-      "max_tokens": 1000,
-      "name": "gpt-4o",
-      "temperature": 0.5,
-    },
-    "prompt": "Produce 2 surnames that sound good with the name: John",
-    "response": {
-      "surnames": [
-        "Doe",
-        "Smith",
-      ],
-    },
-  },
-  {
-    "assistantConfig": {
-      "name": "Movie builder",
-      "skills": [
-        "movie-building-skill",
-        "world-building-skill",
-      ],
-    },
-    "model": {
-      "max_tokens": 1000,
-      "name": "gpt-4o",
-      "temperature": 0.5,
-    },
-    "prompt": "Given the name: John select one of the surnames: Doe,Smith",
-    "response": {
-      "surname": "Doe",
-    },
-  },
-  {
-    "assistantConfig": {
-      "name": "Movie builder",
-      "skills": [
-        "movie-building-skill",
-        "world-building-skill",
-      ],
-    },
-    "model": {
-      "max_tokens": 1000,
-      "name": "gpt-4o",
-      "temperature": 0.5,
-    },
-    "prompt": "Generate a character with the name: John and the surname: Doe",
-    "response": {
-      "character": "John Doe",
-    },
-  },
-]
+    When responding, first thoroughly understand the question. 
+    Break it down into key components, gather relevant information 
+    for each part, analyze each step logically, and then synthesize 
+    your findings into a clear, comprehensive answer. 
+    Explain your reasoning at each stage to ensure clarity and transparency 
+    in your response.
+    
+    !IMPORTANT ALWAYS wrap your thought process in a \`reasoning\` xml tag</description>
+      </skill>
+    </skills>
+    <workflows>
+      <workflow id="character-building">
+        <name>Character building</name>
+        <description>A workflow that allows you to build a character with a given name</description>
+        <input>
+          <name>Human name</name>
+          <description>Input description</description>
+          <schema>{
+            &quot;type&quot;: &quot;object&quot;,
+            &quot;properties&quot;: {
+              &quot;name&quot;: {
+                &quot;type&quot;: &quot;string&quot;
+              },
+              &quot;surnamesLength&quot;: {
+                &quot;type&quot;: &quot;number&quot;
+              }
+            }
+          }</schema>
+        </input>
+        <steps>
+          <step id="surname-generation">
+            <model>
+              <name>gpt-4o</name>
+              <temperature>0.5</temperature>
+              <max_tokens>1000</max_tokens>
+            </model>
+            <name>Surname generation</name>
+            <description>Surname generation step</description>
+            <prompt>Produce \${surnamesLength} surnames that sound good with the name: \${name}</prompt>
+            <output id="surnames">
+              <name>Surnames</name>
+              <schema>{
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                  &quot;surnames&quot;: {
+                    &quot;type&quot;: &quot;array&quot;,
+                    &quot;items&quot;: {
+                      &quot;type&quot;: &quot;string&quot;
+                    }
+                  }
+                }
+              }</schema>
+            </output>
+          </step>
+          <step id="surname-selection">
+            <name>Surname selection</name>
+            <description>Surname selection step</description>
+            <prompt>Given the name: \${name} select one of the surnames: \${surnames}</prompt>
+            <output id="surname">
+              <name>Surname</name>
+              <schema>{
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                  &quot;surname&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                  }
+                }
+              }</schema>
+            </output>
+          </step>
+          <step id="character-generation">
+            <name>Character generation</name>
+            <description>Character generation step</description>
+            <prompt>Generate a character with the name: \${name} and the surname: \${surname}</prompt>
+            <output id="character">
+              <name>Character</name>
+              <schema>{
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                  &quot;character&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                  }
+                }
+              }</schema>
+            </output>
+          </step>
+        </steps>
+      </workflow>
+    </workflows>
+  </skill>
+</skills>
+"
 `;

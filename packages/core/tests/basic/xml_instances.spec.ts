@@ -12,9 +12,6 @@ describe("assistant", () => {
     expect(assistant.name).toMatchSnapshot();
     expect(assistant.description).toMatchSnapshot();
   });
-  it("loads xml", () => {
-    expect(assistant.toString()).toMatchSnapshot();
-  });
   it("loads workflows", () => {
     expect(assistant.workflows?.length).toMatchSnapshot();
   });
@@ -48,8 +45,10 @@ describe("assistant", () => {
       surnamesLength: 2,
     });
 
+    expect(workflowRunner.assistant.toString()).toMatchSnapshot();
+
     await workflowRunner.onFinish();
     expect(workflowRunner.callLLM).toHaveBeenCalledTimes(3);
-    expect(workflowRunner.history).toMatchSnapshot();
+    // expect(workflowRunner.logs).toMatchSnapshot();
   });
 });

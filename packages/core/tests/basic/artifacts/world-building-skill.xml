@@ -1,6 +1,9 @@
 <skill id="world-building-skill">
   <name>World building</name>
   <description>A skill that allows you to build a world</description>
+  <skills>
+    <skill ref="tests/basic/artifacts/COT-skill.xml" />
+  </skills>
   <workflows>
     <workflow id="character-building">
       <name>Character building</name>
