@@ -18,20 +18,22 @@ interface IWorkflowConstructor extends XMLBaseConstructor {
 }
 
 export class Workflow extends XMLBase {
-  name: string;
-  description: string;
+  name: string='';
+  description: string='';
   steps: Step[] = [];
-
+  excludedTags: string[] = ['model'];
+  mapping: any= {
+    id: "@id",
+    name: 'name',
+    description: 'description',
+    steps: ['steps.step', Step],
+    model: 'model'
+  }
   constructor(
     public workflow: IWorkflowConstructor,
   ) {
     super(workflow);
-    this.name = this.node.name;
-    this.description = this.node.description;
-    this.steps = this.node.steps.step.map((step: any) => {
-      return new Step(step);
-    });
-    this.model = this.node.model;
+    this.mount();
   }
 
   run(input?: any): any {

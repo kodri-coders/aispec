@@ -22,20 +22,18 @@ export class Assistant extends XMLBase {
   workflows?: Workflow[] = [];
   skills?: Skill[] = [];
   model?: any;
-
+  excludedTags: string[] = ['model'];
+  mapping: any= {
+    id: "@id",
+    skills: ['skills.skill', Skill],
+    workflows:  ['workflows.workflow', Workflow],
+    model: 'model',
+    description: 'description',
+    name: 'name'
+  }
   constructor(assistant: IAssistantConstructor | XMLBase) {
     super(assistant);
-    this.name = this.node.name;
-    this.description = this.node.description;
-    this.model = this.node.model;
-
-    this.skills = this.node.skills?.skill.map((skill: any) => {
-      return new Skill(skill);
-    });
-
-    this.workflows = this.node.workflows?.workflow.map((workflow: any) => {
-      return new Workflow(workflow);
-    });
+    this.mount();
   }
 
   findWorkflow(workflowId: string): any {

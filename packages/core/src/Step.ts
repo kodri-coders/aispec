@@ -13,23 +13,33 @@ interface IStepConstructor extends XMLBaseConstructor {
   $ref?: string;
 }
 
-export class Step extends XMLBase {
+interface StepInterface {
   name: string;
   description: string;
-  input: Input;
   output: Output;
+  prompt: Prompt;
+  excludedTags: string[];
+} 
+export class Step extends XMLBase {
+  name?: string;
+  description?: string = '';
+  output?: Output;
   prompt?: Prompt;
-
+  excludedTags: string[] = ['model'];
+  mapping: any= {
+    id: "@id",
+    name: 'name',
+    description: 'description',
+    input: ['input', Input],
+    prompt: ['prompt', Prompt],
+    output: ['output', Output],
+    model: 'model'
+  }
   constructor(
     public step: IStepConstructor,
   ) {
     super(step);
-    this.name = this.node.name;
-    this.description = this.node.description;
-    this.input = this.node.input && new Input(this.node.input);
-    this.prompt = this.node.prompt && new Prompt(this.node.prompt);
-    this.output = this.node.output && new Output(this.node.output);
-    this.model = this.node.model;
+    this.mount();
   }
 
   getPrompt(input?: any): any {

@@ -2,6 +2,8 @@ import { EventEmitter } from 'stream';
 import { Assistant } from './Assistant';
 import { XMLBuilder } from 'fast-xml-parser';
 import { LLMEngine } from './LLMEngine';
+import { appendFileSync } from 'fs';
+import { Step } from 'Step';
 
 export class WorkflowRunner extends EventEmitter {
   currentStep: number = -1;
@@ -10,7 +12,7 @@ export class WorkflowRunner extends EventEmitter {
   context: any;
   history: any[] = [];
   assistant: Assistant;
-
+  logs: any[] = [];
   constructor(assistant: Assistant, workflow: any) {
     super();
     this.assistant = assistant;
@@ -50,12 +52,15 @@ export class WorkflowRunner extends EventEmitter {
   }
 
   generateResponse(prompt: string): any {
-    const step = this.workflow.steps[this.currentStep];
-    const model = step.node.model || this.workflow.node.model || this.assistant.node.model;
-    const toolSchema = step.output.schema;
+    const step: Step = this.workflow.steps[this.currentStep];
+    const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
+    const responseToolSchema = step?.output?.schema;
+    if(!responseToolSchema) {
+      throw new Error('Output schema not found');
+    }
     const responseTool = {
       description: 'Response Tool',
-      parameters: [toolSchema],
+      parameters: [responseToolSchema],
       execute: async (params: any) => {
         this.setContext(params);
         this.emit('step-finished', prompt, params);
@@ -69,9 +74,28 @@ export class WorkflowRunner extends EventEmitter {
     }
     const response = this.callLLM(systemPrompt, prompt, [responseTool], model);
     this.history.push({ prompt, response, assistantConfig, model });
+    this.generateLog({ context: step?.prompt?.variables, prompt, response, assistantConfig, model });
     return response;
   }
 
+  generateLog({ context, prompt, response, assistantConfig, model }: any): any {
+    this.logs.push(
+`Prompt:
+${prompt}
+Context:
+${JSON.stringify(context, null, 2)}
+Response:
+${JSON.stringify(response, null, 2)}
+Assistant Config:
+${JSON.stringify(assistantConfig, null, 2)}
+Model:
+${JSON.stringify(model, null, 2)}
+------------------------------------------
+
+
+`
+    )
+  }
   toXML(node: any): string {
     const builder = new XMLBuilder({
       ignoreAttributes: false,

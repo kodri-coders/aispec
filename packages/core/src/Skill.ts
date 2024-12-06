@@ -12,22 +12,20 @@ interface ISkillConstructor extends XMLBaseConstructor {
 }
 
 export class Skill extends XMLBase {
-  name: string;
-  description: string;
   workflows?: Workflow[] = [];
-
+  excludedTags: string[] = ['model'];
+  skills?: Skill[] = [];
+  mapping: any= {
+    id: "@id",
+    workflows: ['workflows.workflow', Workflow],
+    skills: ['skills.skill', Skill],
+    description: 'description',
+    name: 'name'
+  }
   constructor(
     public skill: ISkillConstructor,
   ) {
     super(skill);
-    this.name = this.node.name;
-    this.description = this.node.description;
-    this.workflows = this.node.workflows?.workflow.map((workflow: any) => {
-      return new Workflow(workflow);
-    });
-
-    this.workflows?.forEach((workflow: any) => {
-      this.parent?.workflows?.push(workflow);
-    });
+    this.mount();
   }
 };

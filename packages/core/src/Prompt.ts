@@ -7,9 +7,9 @@ export class Prompt {
     this.variables = this.extractVariables(prompt);
   }
 
-  private extractVariables(prompt: string): string[] {
-    const variables = prompt.match(/\$\{(.+?)\}/g);
-    return variables || [];
+  extractVariables(prompt?: string): string[] {
+    const variables = (prompt || this.prompt).match(/\$\{(.+?)\}/g);
+    return (variables || []).map((variable) => variable.replace(/\${|}/g, ''));
   }
 
   interpolate(data: any): string {
