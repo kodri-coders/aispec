@@ -65,6 +65,7 @@
             </xs:element>
         </xs:sequence>
         <xs:attribute name="id" type="xs:string" use="required"/>
+        <xs:attribute name="current" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
 
     <xs:complexType name="workflowType">

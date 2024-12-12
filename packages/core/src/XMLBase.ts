@@ -107,7 +107,7 @@ export class XMLBase {
     }
   }
   toString(): string {
-    // reutrn xml
+    // return xml
     const builder = new XMLBuilder({
       ignoreAttributes: false,
       attributeNamePrefix: '@',

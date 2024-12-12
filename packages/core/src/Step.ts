@@ -5,6 +5,7 @@ import { Assistant } from './Assistant';
 import { Output } from './Output';
 
 interface IStepConstructor extends XMLBaseConstructor {
+  '@current': boolean;
   name: string;
   description: string;
   input: any;
@@ -28,6 +29,7 @@ export class Step extends XMLBase {
   excludedTags: string[] = ['model'];
   mapping: any= {
     id: "@id",
+    current: "@current",
     name: 'name',
     description: 'description',
     input: ['input', Input],
@@ -44,5 +46,9 @@ export class Step extends XMLBase {
 
   getPrompt(input?: any): any {
     return this.prompt?.interpolate(input);
+  }
+
+  setCurrent(current?: boolean): void {
+    this.mapping.current = current;
   }
 };
