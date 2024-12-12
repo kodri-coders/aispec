@@ -53,6 +53,9 @@ export class WorkflowRunner extends EventEmitter {
 
   generateResponse(prompt: string): any {
     const step: Step = this.workflow.steps[this.currentStep];
+    this.workflow.steps.forEach((step: Step, index: number): void => {
+      step.setCurrent(index === this.currentStep);
+    });
     const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
     const responseToolSchema = step?.output?.schema;
     if(!responseToolSchema) {
