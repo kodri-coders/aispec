@@ -1,0 +1,25 @@
+{
+  "name": "@aispec/monorepo",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "scripts": {
+    "lint": "eslint"
+  },
+  "devDependencies": {
+    "@eslint/compat": "1.2.4",
+    "@eslint/js": "^9.16.0",
+    "@stylistic/eslint-plugin": "^2.12.1",
+    "@types/node": "catalog:",
+    "eslint": "^9.16.0",
+    "eslint-import-resolver-typescript": "^3.7.0",
+    "eslint-plugin-import-x": "^4.5.0",
+    "eslint-plugin-jest": "^28.9.0",
+    "eslint-plugin-jsdoc": "^50.6.1",
+    "eslint-plugin-perfectionist": "^4.3.0",
+    "eslint-plugin-security": "^3.0.1",
+    "globals": "^15.13.0",
+    "prettier": "^3.4.2",
+    "typescript-eslint": "^8.17.0"
+  }
+}
