@@ -1,34 +1,35 @@
-import { Assistant } from './Assistant';
 import { Step } from './Step';
 import { XMLBase, type XMLBaseConstructor } from './XMLBase';
 
 interface IWorkflowConstructor extends XMLBaseConstructor {
   '@id': string;
-  name: string;
-  description: string;
-  steps: {
+  'description': string;
+  'name': string;
+  'steps': {
     step: {
-      name: string;
       description: string;
       input: any;
-      prompt: string;
+      name: string;
       outputs: any;
+      prompt: string;
     }[];
   };
 }
 
 export class Workflow extends XMLBase {
-  name: string='';
-  description: string='';
-  steps: Step[] = [];
-  excludedTags: string[] = ['model'];
-  mapping: any= {
-    id: "@id",
-    name: 'name',
+  description = '';
+  override excludedTags: string[] = ['model'];
+  mapping: any = {
     description: 'description',
+    id: '@id',
+    model: 'model',
+    name: 'name',
     steps: ['steps.step', Step],
-    model: 'model'
-  }
+  };
+
+  name = '';
+  steps: Step[] = [];
+
   constructor(
     public workflow: IWorkflowConstructor,
   ) {

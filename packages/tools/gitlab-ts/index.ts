@@ -1,4 +1,4 @@
-import { Tool } from "@aispec/tool-types";
+import { Tool } from '@aispec/tool-types';
 import axios from 'axios';
 
 interface GitLabConfig {
@@ -6,49 +6,49 @@ interface GitLabConfig {
   token: string;
 }
 
-interface MergeRequest {
-  id: number;
-  iid: number;
-  title: string;
-  description: string;
-  state: string;
-  created_at: string;
-  updated_at: string;
+interface Issue {
+  assignees: {
+    name: string;
+    username: string;
+  }[];
   author: {
     name: string;
     username: string;
   };
-  source_branch: string;
-  target_branch: string;
+  created_at: string;
+  description: string;
+  id: number;
+  iid: number;
+  labels: string[];
+  state: string;
+  title: string;
+  updated_at: string;
   web_url: string;
 }
 
-interface Issue {
-  id: number;
-  iid: number;
-  title: string;
-  description: string;
-  state: string;
-  created_at: string;
-  updated_at: string;
+interface MergeRequest {
   author: {
     name: string;
     username: string;
   };
-  assignees: Array<{
-    name: string;
-    username: string;
-  }>;
-  labels: string[];
+  created_at: string;
+  description: string;
+  id: number;
+  iid: number;
+  source_branch: string;
+  state: string;
+  target_branch: string;
+  title: string;
+  updated_at: string;
   web_url: string;
 }
 
 interface Pipeline {
+  created_at: string;
   id: number;
-  status: string;
   ref: string;
   sha: string;
-  created_at: string;
+  status: string;
   updated_at: string;
   web_url: string;
 }
@@ -60,74 +60,75 @@ class GitLabManager {
     this.client = axios.create({
       baseURL: config.baseUrl.replace(/\/$/, '') + '/api/v4',
       headers: {
-        'PRIVATE-TOKEN': config.token,
         'Content-Type': 'application/json',
+        'PRIVATE-TOKEN': config.token,
       },
     });
+  }
+
+  async createIssueComment(
+    projectId: number | string,
+    issueIid: number,
+    comment: string,
+  ): Promise<void> {
+    await this.makeRequest(
+      `/projects/${projectId}/issues/${issueIid}/notes`,
+      'POST',
+      { body: comment },
+    );
+  }
+
+  async createMergeRequestComment(
+    projectId: number | string,
+    mrIid: number,
+    comment: string,
+  ): Promise<void> {
+    await this.makeRequest(
+      `/projects/${projectId}/merge_requests/${mrIid}/notes`,
+      'POST',
+      { body: comment },
+    );
+  }
+
+  async getIssue(projectId: number | string, issueIid: number): Promise<Issue> {
+    return this.makeRequest<Issue>(`/projects/${projectId}/issues/${issueIid}`);
+  }
+
+  async getMergeRequest(projectId: number | string, mrIid: number): Promise<MergeRequest> {
+    return this.makeRequest<MergeRequest>(`/projects/${projectId}/merge_requests/${mrIid}`);
+  }
+
+  async getPipeline(projectId: number | string, pipelineId: number): Promise<Pipeline> {
+    return this.makeRequest<Pipeline>(`/projects/${projectId}/pipelines/${pipelineId}`);
+  }
+
+  async listIssues(projectId: number | string, state = 'opened'): Promise<Issue[]> {
+    return this.makeRequest<Issue[]>(`/projects/${projectId}/issues?state=${state}`);
+  }
+
+  async listMergeRequests(projectId: number | string, state = 'opened'): Promise<MergeRequest[]> {
+    return this.makeRequest<MergeRequest[]>(`/projects/${projectId}/merge_requests?state=${state}`);
+  }
+
+  async listPipelines(projectId: number | string): Promise<Pipeline[]> {
+    return this.makeRequest<Pipeline[]>(`/projects/${projectId}/pipelines`);
   }
 
   private async makeRequest<T>(path: string, method = 'GET', data?: any): Promise<T> {
     try {
       const response = await this.client.request({
-        url: path,
-        method,
         data,
+        method,
+        url: path,
       });
       return response.data;
-    } catch (error) {
+    }
+    catch (error) {
       if (axios.isAxiosError(error)) {
         throw new Error(`GitLab API error: ${error.response?.data?.message || error.message}`);
       }
       throw error;
     }
-  }
-
-  async getMergeRequest(projectId: string | number, mrIid: number): Promise<MergeRequest> {
-    return this.makeRequest<MergeRequest>(`/projects/${projectId}/merge_requests/${mrIid}`);
-  }
-
-  async listMergeRequests(projectId: string | number, state = 'opened'): Promise<MergeRequest[]> {
-    return this.makeRequest<MergeRequest[]>(`/projects/${projectId}/merge_requests?state=${state}`);
-  }
-
-  async getIssue(projectId: string | number, issueIid: number): Promise<Issue> {
-    return this.makeRequest<Issue>(`/projects/${projectId}/issues/${issueIid}`);
-  }
-
-  async listIssues(projectId: string | number, state = 'opened'): Promise<Issue[]> {
-    return this.makeRequest<Issue[]>(`/projects/${projectId}/issues?state=${state}`);
-  }
-
-  async getPipeline(projectId: string | number, pipelineId: number): Promise<Pipeline> {
-    return this.makeRequest<Pipeline>(`/projects/${projectId}/pipelines/${pipelineId}`);
-  }
-
-  async listPipelines(projectId: string | number): Promise<Pipeline[]> {
-    return this.makeRequest<Pipeline[]>(`/projects/${projectId}/pipelines`);
-  }
-
-  async createMergeRequestComment(
-    projectId: string | number,
-    mrIid: number,
-    comment: string
-  ): Promise<void> {
-    await this.makeRequest(
-      `/projects/${projectId}/merge_requests/${mrIid}/notes`,
-      'POST',
-      { body: comment }
-    );
-  }
-
-  async createIssueComment(
-    projectId: string | number,
-    issueIid: number,
-    comment: string
-  ): Promise<void> {
-    await this.makeRequest(
-      `/projects/${projectId}/issues/${issueIid}/notes`,
-      'POST',
-      { body: comment }
-    );
   }
 }
 
@@ -136,24 +137,7 @@ let gitlabManager: GitLabManager | null = null;
 
 // Tool definitions
 const authenticateTool: Tool = {
-  id: 'authenticate',
-  name: 'Authenticate',
   description: 'Authenticate with GitLab using a personal access token',
-  parameters: [
-    {
-      name: 'baseUrl',
-      type: 'string',
-      description: 'GitLab instance URL (e.g., https://gitlab.com)',
-      required: true,
-    },
-    {
-      name: 'token',
-      type: 'string',
-      description: 'GitLab personal access token',
-      required: true,
-    }
-  ],
-  returnType: 'string',
   handler: async (params: any) => {
     gitlabManager = new GitLabManager({
       baseUrl: params.baseUrl,
@@ -161,189 +145,183 @@ const authenticateTool: Tool = {
     });
     return 'Authentication successful';
   },
+  id: 'authenticate',
+  name: 'Authenticate',
+  parameters: [
+    {
+      description: 'GitLab instance URL (e.g., https://gitlab.com)',
+      name: 'baseUrl',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'GitLab personal access token',
+      name: 'token',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const getMergeRequestTool: Tool = {
-  id: 'get_merge_request',
-  name: 'Get Merge Request',
   description: 'Get details of a specific merge request',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'mrIid',
-      type: 'number',
-      description: 'Merge request internal ID',
-      required: true,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.getMergeRequest(params.projectId, params.mrIid);
   },
+  id: 'get_merge_request',
+  name: 'Get Merge Request',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Merge request internal ID',
+      name: 'mrIid',
+      required: true,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const listMergeRequestsTool: Tool = {
-  id: 'list_merge_requests',
-  name: 'List Merge Requests',
   description: 'List merge requests in a project',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'state',
-      type: 'string',
-      description: 'State of merge requests (opened, closed, merged, all)',
-      required: false,
-    }
-  ],
-  returnType: 'array',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.listMergeRequests(params.projectId, params.state);
   },
+  id: 'list_merge_requests',
+  name: 'List Merge Requests',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'State of merge requests (opened, closed, merged, all)',
+      name: 'state',
+      required: false,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const getIssueTool: Tool = {
-  id: 'get_issue',
-  name: 'Get Issue',
   description: 'Get details of a specific issue',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'issueIid',
-      type: 'number',
-      description: 'Issue internal ID',
-      required: true,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.getIssue(params.projectId, params.issueIid);
   },
+  id: 'get_issue',
+  name: 'Get Issue',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Issue internal ID',
+      name: 'issueIid',
+      required: true,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const listIssuesTool: Tool = {
-  id: 'list_issues',
-  name: 'List Issues',
   description: 'List issues in a project',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'state',
-      type: 'string',
-      description: 'State of issues (opened, closed, all)',
-      required: false,
-    }
-  ],
-  returnType: 'array',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.listIssues(params.projectId, params.state);
   },
+  id: 'list_issues',
+  name: 'List Issues',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'State of issues (opened, closed, all)',
+      name: 'state',
+      required: false,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const getPipelineTool: Tool = {
-  id: 'get_pipeline',
-  name: 'Get Pipeline',
   description: 'Get details of a specific pipeline',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'pipelineId',
-      type: 'number',
-      description: 'Pipeline ID',
-      required: true,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.getPipeline(params.projectId, params.pipelineId);
   },
+  id: 'get_pipeline',
+  name: 'Get Pipeline',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Pipeline ID',
+      name: 'pipelineId',
+      required: true,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const listPipelinesTool: Tool = {
-  id: 'list_pipelines',
-  name: 'List Pipelines',
   description: 'List pipelines in a project',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    }
-  ],
-  returnType: 'array',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await gitlabManager.listPipelines(params.projectId);
   },
+  id: 'list_pipelines',
+  name: 'List Pipelines',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const createMergeRequestCommentTool: Tool = {
-  id: 'create_mr_comment',
-  name: 'Create Merge Request Comment',
   description: 'Add a comment to a merge request',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'mrIid',
-      type: 'number',
-      description: 'Merge request internal ID',
-      required: true,
-    },
-    {
-      name: 'comment',
-      type: 'string',
-      description: 'Comment text',
-      required: true,
-    }
-  ],
-  returnType: 'string',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
@@ -351,33 +329,33 @@ const createMergeRequestCommentTool: Tool = {
     await gitlabManager.createMergeRequestComment(params.projectId, params.mrIid, params.comment);
     return 'Comment created successfully';
   },
+  id: 'create_mr_comment',
+  name: 'Create Merge Request Comment',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Merge request internal ID',
+      name: 'mrIid',
+      required: true,
+      type: 'number',
+    },
+    {
+      description: 'Comment text',
+      name: 'comment',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const createIssueCommentTool: Tool = {
-  id: 'create_issue_comment',
-  name: 'Create Issue Comment',
   description: 'Add a comment to an issue',
-  parameters: [
-    {
-      name: 'projectId',
-      type: 'string',
-      description: 'Project ID or URL-encoded path',
-      required: true,
-    },
-    {
-      name: 'issueIid',
-      type: 'number',
-      description: 'Issue internal ID',
-      required: true,
-    },
-    {
-      name: 'comment',
-      type: 'string',
-      description: 'Comment text',
-      required: true,
-    }
-  ],
-  returnType: 'string',
   handler: async (params: any) => {
     if (!gitlabManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
@@ -385,6 +363,29 @@ const createIssueCommentTool: Tool = {
     await gitlabManager.createIssueComment(params.projectId, params.issueIid, params.comment);
     return 'Comment created successfully';
   },
+  id: 'create_issue_comment',
+  name: 'Create Issue Comment',
+  parameters: [
+    {
+      description: 'Project ID or URL-encoded path',
+      name: 'projectId',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Issue internal ID',
+      name: 'issueIid',
+      required: true,
+      type: 'number',
+    },
+    {
+      description: 'Comment text',
+      name: 'comment',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const tools = [

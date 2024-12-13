@@ -1,40 +1,42 @@
 import { Input } from './Input';
+import { Output } from './Output';
 import { Prompt } from './Prompt';
 import { XMLBase, type XMLBaseConstructor } from './XMLBase';
-import { Assistant } from './Assistant';
-import { Output } from './Output';
 
 interface IStepConstructor extends XMLBaseConstructor {
-  name: string;
+  $ref?: string;
   description: string;
   input: any;
-  prompt: string;
+  name: string;
   outputs: any;
-  $ref?: string;
+  prompt: string;
 }
 
-interface StepInterface {
-  name: string;
-  description: string;
-  output: Output;
-  prompt: Prompt;
-  excludedTags: string[];
-} 
+// interface StepInterface {
+//   name: string;
+//   description: string;
+//   output: Output;
+//   prompt: Prompt;
+//   excludedTags: string[];
+// }
+
 export class Step extends XMLBase {
-  name?: string;
   description?: string = '';
+  override excludedTags: string[] = ['model'];
+  mapping: any = {
+    description: 'description',
+    id: '@id',
+    input: ['input', Input],
+    model: 'model',
+    name: 'name',
+    output: ['output', Output],
+    prompt: ['prompt', Prompt],
+  };
+
+  name?: string;
   output?: Output;
   prompt?: Prompt;
-  excludedTags: string[] = ['model'];
-  mapping: any= {
-    id: "@id",
-    name: 'name',
-    description: 'description',
-    input: ['input', Input],
-    prompt: ['prompt', Prompt],
-    output: ['output', Output],
-    model: 'model'
-  }
+
   constructor(
     public step: IStepConstructor,
   ) {

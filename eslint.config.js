@@ -41,6 +41,10 @@ export default tseslint.config(
       perfectionist,
     },
     rules: {
+      '@typescript-eslint/no-empty-function': [
+        'error',
+        { allow: ['arrowFunctions'] },
+      ],
       '@typescript-eslint/no-explicit-any': 'warn',
       // the following import-x rules already checked by typescript eslint
       'import-x/default': 'off',

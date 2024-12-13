@@ -1,14 +1,14 @@
 import { type XMLBaseConstructor } from './XMLBase';
 
 interface IOutputConstructor extends XMLBaseConstructor {
-  name: string;
   description: string;
+  name: string;
   schema: string;
 }
 
 export class Output {
-  name: string;
   description: string;
+  name: string;
   schema: string;
 
   constructor(public output: IOutputConstructor) {

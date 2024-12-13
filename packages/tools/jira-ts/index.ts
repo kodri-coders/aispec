@@ -1,47 +1,47 @@
-import { Tool } from "@aispec/tool-types";
-import axios from "axios";
-
-interface JiraConfig {
-  baseUrl: string;
-  email: string;
-  apiToken: string;
-}
-
-interface JiraIssue {
-  id: string;
-  key: string;
-  fields: {
-    summary: string;
-    description: string;
-    status: {
-      name: string;
-    };
-    priority: {
-      name: string;
-    };
-    assignee?: {
-      displayName: string;
-      emailAddress: string;
-    };
-    reporter: {
-      displayName: string;
-      emailAddress: string;
-    };
-    created: string;
-    updated: string;
-    labels: string[];
-  };
-}
+import { Tool } from '@aispec/tool-types';
+import axios from 'axios';
 
 interface JiraComment {
-  id: string;
   author: {
     displayName: string;
     emailAddress: string;
   };
   body: string;
   created: string;
+  id: string;
   updated: string;
+}
+
+interface JiraConfig {
+  apiToken: string;
+  baseUrl: string;
+  email: string;
+}
+
+interface JiraIssue {
+  fields: {
+    assignee?: {
+      displayName: string;
+      emailAddress: string;
+    };
+    created: string;
+    description: string;
+    labels: string[];
+    priority: {
+      name: string;
+    };
+    reporter: {
+      displayName: string;
+      emailAddress: string;
+    };
+    status: {
+      name: string;
+    };
+    summary: string;
+    updated: string;
+  };
+  id: string;
+  key: string;
 }
 
 interface JiraTransition {
@@ -57,54 +57,32 @@ class JiraManager {
 
   constructor(config: JiraConfig) {
     const auth = Buffer.from(`${config.email}:${config.apiToken}`).toString(
-      "base64",
+      'base64',
     );
     this.client = axios.create({
-      baseURL: config.baseUrl.replace(/\/$/, "") + "/rest/api/3",
+      baseURL: config.baseUrl.replace(/\/$/, '') + '/rest/api/3',
       headers: {
-        Authorization: `Basic ${auth}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Accept': 'application/json',
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/json',
       },
     });
   }
 
-  private async makeRequest<T>(
-    path: string,
-    method = "GET",
-    data?: any,
-  ): Promise<T> {
-    try {
-      const response = await this.client.request({
-        url: path,
-        method,
-        data,
-      });
-      return response.data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(
-          `Jira API error: ${error.response?.data?.message || error.message}`,
-        );
-      }
-      throw error;
-    }
-  }
-
-  async getIssue(issueKey: string): Promise<JiraIssue> {
-    return this.makeRequest<JiraIssue>(`/issue/${issueKey}`);
-  }
-
-  async searchIssues(jql: string): Promise<JiraIssue[]> {
-    const response = await this.makeRequest<{ issues: JiraIssue[] }>(
-      "/search",
-      "POST",
-      {
-        jql,
-        maxResults: 50,
+  async addComment(issueKey: string, comment: string): Promise<void> {
+    await this.makeRequest(`/issue/${issueKey}/comment`, 'POST', {
+      body: {
+        content: [
+          { content: [{ text: comment, type: 'text' }], type: 'paragraph' },
+        ],
+        type: 'doc',
+        version: 1,
       },
-    );
-    return response.issues;
+    });
+  }
+
+  async assignIssue(issueKey: string, accountId: string): Promise<void> {
+    await this.makeRequest(`/issue/${issueKey}/assignee`, 'PUT', { accountId });
   }
 
   async getComments(issueKey: string): Promise<JiraComment[]> {
@@ -114,16 +92,8 @@ class JiraManager {
     return response.comments;
   }
 
-  async addComment(issueKey: string, comment: string): Promise<void> {
-    await this.makeRequest(`/issue/${issueKey}/comment`, "POST", {
-      body: {
-        type: "doc",
-        version: 1,
-        content: [
-          { type: "paragraph", content: [{ type: "text", text: comment }] },
-        ],
-      },
-    });
+  async getIssue(issueKey: string): Promise<JiraIssue> {
+    return this.makeRequest<JiraIssue>(`/issue/${issueKey}`);
   }
 
   async getTransitions(issueKey: string): Promise<JiraTransition[]> {
@@ -133,14 +103,45 @@ class JiraManager {
     return response.transitions;
   }
 
+  async searchIssues(jql: string): Promise<JiraIssue[]> {
+    const response = await this.makeRequest<{ issues: JiraIssue[] }>(
+      '/search',
+      'POST',
+      {
+        jql,
+        maxResults: 50,
+      },
+    );
+    return response.issues;
+  }
+
   async transitionIssue(issueKey: string, transitionId: string): Promise<void> {
-    await this.makeRequest(`/issue/${issueKey}/transitions`, "POST", {
+    await this.makeRequest(`/issue/${issueKey}/transitions`, 'POST', {
       transition: { id: transitionId },
     });
   }
 
-  async assignIssue(issueKey: string, accountId: string): Promise<void> {
-    await this.makeRequest(`/issue/${issueKey}/assignee`, "PUT", { accountId });
+  private async makeRequest<T>(
+    path: string,
+    method = 'GET',
+    data?: any,
+  ): Promise<T> {
+    try {
+      const response = await this.client.request({
+        data,
+        method,
+        url: path,
+      });
+      return response.data;
+    }
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(
+          `Jira API error: ${error.response?.data?.message || error.message}`,
+        );
+      }
+      throw error;
+    }
   }
 }
 
@@ -149,207 +150,207 @@ let jiraManager: JiraManager | null = null;
 
 // Tool definitions
 const authenticateTool: Tool = {
-  id: "authenticate",
-  name: "Authenticate",
-  description: "Authenticate with Jira using email and API token",
-  parameters: [
-    {
-      name: "baseUrl",
-      type: "string",
-      description:
-        "Jira instance URL (e.g., https://your-domain.atlassian.net)",
-      required: true,
-    },
-    {
-      name: "email",
-      type: "string",
-      description: "Jira account email",
-      required: true,
-    },
-    {
-      name: "apiToken",
-      type: "string",
-      description: "Jira API token",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Authenticate with Jira using email and API token',
   handler: async (params: any) => {
     jiraManager = new JiraManager({
+      apiToken: params.apiToken,
       baseUrl: params.baseUrl,
       email: params.email,
-      apiToken: params.apiToken,
     });
-    return "Authentication successful";
+    return 'Authentication successful';
   },
+  id: 'authenticate',
+  name: 'Authenticate',
+  parameters: [
+    {
+      description:
+        'Jira instance URL (e.g., https://your-domain.atlassian.net)',
+      name: 'baseUrl',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Jira account email',
+      name: 'email',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Jira API token',
+      name: 'apiToken',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const getIssueTool: Tool = {
-  id: "get_issue",
-  name: "Get Issue",
-  description: "Get details of a specific Jira issue",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-  ],
-  returnType: "object",
+  description: 'Get details of a specific Jira issue',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await jiraManager.getIssue(params.issueKey);
   },
+  id: 'get_issue',
+  name: 'Get Issue',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'object',
 };
 
 const searchIssuesTool: Tool = {
-  id: "search_issues",
-  name: "Search Issues",
-  description: "Search for Jira issues using JQL",
-  parameters: [
-    {
-      name: "jql",
-      type: "string",
-      description: "JQL search query",
-      required: true,
-    },
-  ],
-  returnType: "array",
+  description: 'Search for Jira issues using JQL',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await jiraManager.searchIssues(params.jql);
   },
+  id: 'search_issues',
+  name: 'Search Issues',
+  parameters: [
+    {
+      description: 'JQL search query',
+      name: 'jql',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const getCommentsTool: Tool = {
-  id: "get_comments",
-  name: "Get Comments",
-  description: "Get all comments on a Jira issue",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-  ],
-  returnType: "array",
+  description: 'Get all comments on a Jira issue',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await jiraManager.getComments(params.issueKey);
   },
+  id: 'get_comments',
+  name: 'Get Comments',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const addCommentTool: Tool = {
-  id: "add_comment",
-  name: "Add Comment",
-  description: "Add a comment to a Jira issue",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-    {
-      name: "comment",
-      type: "string",
-      description: "Comment text",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Add a comment to a Jira issue',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     await jiraManager.addComment(params.issueKey, params.comment);
-    return "Comment added successfully";
+    return 'Comment added successfully';
   },
+  id: 'add_comment',
+  name: 'Add Comment',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Comment text',
+      name: 'comment',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const getTransitionsTool: Tool = {
-  id: "get_transitions",
-  name: "Get Transitions",
-  description: "Get available transitions for a Jira issue",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-  ],
-  returnType: "array",
+  description: 'Get available transitions for a Jira issue',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     return await jiraManager.getTransitions(params.issueKey);
   },
+  id: 'get_transitions',
+  name: 'Get Transitions',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'array',
 };
 
 const transitionIssueTool: Tool = {
-  id: "transition_issue",
-  name: "Transition Issue",
-  description: "Move a Jira issue to a different status",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-    {
-      name: "transitionId",
-      type: "string",
-      description: "Transition ID",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Move a Jira issue to a different status',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     await jiraManager.transitionIssue(params.issueKey, params.transitionId);
-    return "Issue transitioned successfully";
+    return 'Issue transitioned successfully';
   },
+  id: 'transition_issue',
+  name: 'Transition Issue',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Transition ID',
+      name: 'transitionId',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const assignIssueTool: Tool = {
-  id: "assign_issue",
-  name: "Assign Issue",
-  description: "Assign a Jira issue to a user",
-  parameters: [
-    {
-      name: "issueKey",
-      type: "string",
-      description: "Issue key (e.g., PROJECT-123)",
-      required: true,
-    },
-    {
-      name: "accountId",
-      type: "string",
-      description: "Account ID of the assignee",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Assign a Jira issue to a user',
   handler: async (params: any) => {
     if (!jiraManager) {
-      throw new Error("Not authenticated. Please call authenticate first.");
+      throw new Error('Not authenticated. Please call authenticate first.');
     }
     await jiraManager.assignIssue(params.issueKey, params.accountId);
-    return "Issue assigned successfully";
+    return 'Issue assigned successfully';
   },
+  id: 'assign_issue',
+  name: 'Assign Issue',
+  parameters: [
+    {
+      description: 'Issue key (e.g., PROJECT-123)',
+      name: 'issueKey',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Account ID of the assignee',
+      name: 'accountId',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const tools = [
