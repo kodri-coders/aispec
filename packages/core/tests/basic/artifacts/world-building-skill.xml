@@ -121,10 +121,9 @@
           <name>Backstory enhancement</name>
           <description>Backstory enhancement step</description>
           <prompt>
-            The character is: ${character}
             Enhance the backstory: ${backstory}
           </prompt>
-          <output id="enhanced-backstories">
+          <output id="enhanced-backstories">  
             <name>Enhanced backstory</name>
             <schema push='enhanced_backstories'>
               {

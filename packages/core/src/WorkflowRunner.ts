@@ -19,76 +19,6 @@ export class WorkflowRunner extends EventEmitter {
     this.workflow = workflow;
   }
 
-  callLLM(systemPrompt: string, prompt: string, tools: any, model: any): any {
-    console.log('prompt', prompt);
-    console.log('tools', tools);
-    console.log('model', model);
-    return new LLMEngine(model).generateText({
-      prompt,
-      systemPrompt,
-    });
-  }
-
-  generateLog({ assistantConfig, context, model, prompt, response }: any): any {
-    this.logs.push(
-      `Prompt:
-${prompt}
-Context:
-${JSON.stringify(context, null, 2)}
-Response:
-${JSON.stringify(response, null, 2)}
-Assistant Config:
-${JSON.stringify(assistantConfig, null, 2)}
-Model:
-${JSON.stringify(model, null, 2)}
-------------------------------------------
-
-
-`,
-    );
-  }
-
-  generateResponse(prompt: string): any {
-    const step: Step = this.workflow.steps[this.currentStep];
-    const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
-    const responseToolSchema = step?.output?.schema;
-    if (!responseToolSchema) {
-      throw new Error('Output schema not found');
-    }
-    const responseTool = {
-      description: 'Response Tool',
-      execute: async (params: any) => {
-        this.setContext(params);
-        this.emit('step-finished', prompt, params);
-        return true;
-      },
-      parameters: [responseToolSchema],
-    };
-    const systemPrompt = this.toXML(this.assistant.node);
-    const assistantConfig = {
-      name: this.assistant.name,
-      skills: this.assistant?.skills?.map((s: any) => s.node['@id']),
-    };
-    const response = this.callLLM(systemPrompt, prompt, [responseTool], model);
-    this.history.push({ assistantConfig, model, prompt, response });
-    this.generateLog({ assistantConfig, context: step?.prompt?.variables, model, prompt, response });
-    return response;
-  }
-
-  next(): void {
-    this.currentStep++;
-    if (this.currentStep >= this.workflow.steps.length) {
-      this.emit('workflow-finished', this.workflow);
-      this.finished = true;
-      return;
-    }
-    const step = this.workflow.steps[this.currentStep];
-    const prompt = step.getPrompt(this.context);
-    const data = this.generateResponse(prompt);
-    this.setContext(data);
-    this.emit('step-finished', prompt, data);
-  }
-
   onFinish() {
     return new Promise((resolve) => {
       if (this.finished) {
@@ -111,12 +41,108 @@ ${JSON.stringify(model, null, 2)}
     this.next();
   }
 
+  async callLLM(systemPrompt: string, prompt: string, tools: any, model: any): Promise<any> {
+    console.log('prompt', prompt);
+    console.log('tools', tools);
+    console.log('model', model);
+    return new LLMEngine(model).generateText({
+      prompt,
+      systemPrompt,
+    });
+  }
+
+  async generateResponse(prompt: string): Promise<any> {
+    const step: Step = this.workflow.steps[this.currentStep];
+    const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
+    const responseToolSchema = step?.output?.schema;
+    if(!responseToolSchema) {
+      throw new Error('Output schema not found');
+    }
+    const responseTool = {
+      description: 'Response Tool',
+      parameters: [responseToolSchema],
+      execute: async (params: any) => {
+        this.setContext(params);
+        this.emit('step-finished', prompt, params);
+        return true;
+      },
+    };
+    const systemPrompt = this.toXML(this.assistant.node);
+    const assistantConfig = {
+      name: this.assistant.name,
+      skills: this.assistant?.skills?.map((s: any) => s.node['@id']),
+    }
+    const response = await this.callLLM(systemPrompt, prompt, [responseTool], model);
+    this.history.push({ prompt, response, assistantConfig, model });
+    this.generateLog({ context: step?.prompt?.variables, prompt, response, assistantConfig, model });
+    return response;
+  }
+
+  generateLog({ context, prompt, response, assistantConfig, model }: any): any {
+    this.logs.push(
+      createLog(prompt, context, response, assistantConfig, model)
+    )
+  }
   toXML(node: any): string {
     const builder = new XMLBuilder({
+      ignoreAttributes: false,
       attributeNamePrefix: '@',
       format: true,
-      ignoreAttributes: false,
     });
     return builder.build(node);
   }
+
+  async next(): Promise<void> {
+    this.currentStep++;
+    if (this.currentStep >= this.workflow.steps.length) {
+      this.emit('workflow-finished', this.workflow);
+      this.finished = true;
+      return;
+    }
+    const step = this.workflow.steps[this.currentStep];
+    if(step.node['@loop']){
+
+      const loop = this.context[step.node['@loop']];
+      const prompts = [];
+      const responses = [];
+      for (const item of loop) {
+        const prompt = step.getPrompt({...this.context, [step.node['@as']]: item});
+        const data = await this.generateResponse(prompt);
+         prompts.push(prompt);
+         responses.push(data);
+        if(step.output.node.schema['@push']) {
+          const contextVar = this.context[step.output.node.schema['@push']] || [];
+          contextVar.push(data);
+          this.setContext({
+            ...this.context,
+            [step.output.node.schema['@push']]: contextVar,
+          });
+        }
+      }
+      this.emit('step-finished', prompts, responses);
+      
+    }else{
+      const prompt = step.getPrompt(this.context);
+      const data = await this.generateResponse(prompt);
+      this.setContext(data);
+      this.emit('step-finished', prompt, data);
+    }
+  }
 }
+function createLog(prompt: any, context: any, response: any, assistantConfig: any, model: any): any {
+  return `Prompt:
+${prompt}
+Context:
+${JSON.stringify(context, null, 2)}
+Response:
+${JSON.stringify(response, null, 2)}
+Assistant Config:
+${JSON.stringify(assistantConfig, null, 2)}
+Model:
+${JSON.stringify(model, null, 2)}
+------------------------------------------
+
+
+`;
+}
+
