@@ -1,4 +1,9 @@
-import { generateText } from 'ai';
+import { generateText, jsonSchema, tool } from 'ai';
+import { openai } from "@ai-sdk/openai"
+// load environment variables
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 interface Model {
   max_tokens: number;
   name: string;
@@ -9,69 +14,92 @@ export class LLMEngine {
   constructor(model: Model) {
     this.model = model;
   }
-
-  async generateText({
-    prompt,
-    systemPrompt,
-  }: {
-    prompt: string;
-    systemPrompt: string;
-  }): Promise<string> {
-    const response = await generateText(
-      this.prepareRequest({
-        model: this.model,
-        prompt,
-        systemPrompt,
-        tools: [],
-      }));
-    return response.text;
-  }
-
   modelFactory(model: Model): LLMEngine {
     return new LLMEngine(model);
   }
-
   prepareRequest({
-    model,
-    prompt,
     systemPrompt,
+    prompt,
     tools,
+    model,
   }: {
-    model: any;
-    prompt: string;
     systemPrompt: string;
+    prompt: string;
     tools: any;
+    model: any;
   }): any {
     switch (model.name) {
-      case 'gpt-3.5':
       case 'gpt-4':
       case 'gpt-4o':
+      case 'gpt-3.5':
         return {
-          maxTokens: model.max_tokens,
-          model: model.name,
-          prompt,
           system: systemPrompt,
+          prompt,
+          tools: tools.map((t: any) => tool({
+            ...t,
+            parameters: jsonSchema(t.parameters[0])
+          })),
+          model:openai(model.name),
           temperature: model.temperature,
-          tools,
+          maxTokens: model.max_tokens,
         };
       case 'o1-mini':
       case 'o1-preview':
         return {
           messages: [
             {
-              content: systemPrompt,
               role: 'user',
+              content: systemPrompt
             },
             {
-              content: prompt,
               role: 'user',
-            },
+              content: `${prompt}
+              You must respond in a JSON format with the following structure:
+              ${JSON.stringify(tools[0].parameters[0], null, 2)}
+              Do not wrap the JSON in any additional text or \`\`\` blocks.
+              `
+            }
+
           ],
-          model: model.name,
-          tools,
+          model:  openai(model.name),
         };
       default:
         throw new Error('Model not supported');
     }
+  }
+  handleResponse(response: any, responseTool?: any): any {
+    switch (this.model.name) {
+      case 'gpt-4':
+      case 'gpt-4o':
+      case 'gpt-3.5':
+        return {text: response.text, tools: response.toolCalls};
+      case 'o1-mini':
+      case 'o1-preview':
+      responseTool.execute(JSON.parse(response.text));
+        return {
+          text: '',
+          tools: [responseTool],
+        };
+      default:
+        throw new Error('Model not supported');
+    }
+  }
+  async generateText({
+    prompt,
+    tools,
+    systemPrompt,
+  }: {
+    prompt: string;
+    systemPrompt: string;
+    tools: any[];
+  }): Promise<{text: string, tools: any}> {
+    const response = await generateText(
+      this.prepareRequest({
+        systemPrompt,
+        prompt,
+        tools,
+        model: this.model,
+      }));
+    return this.handleResponse(response, tools[0]);
   }
 }

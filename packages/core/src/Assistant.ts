@@ -88,7 +88,7 @@ export class Assistant extends XMLBase {
     }
     if (targetWorkflow && !containingSkill) {
       xmlObj.assistant.workflows = {
-        workflow: [targetWorkflow],
+        workflow: [targetWorkflow.node],
       };
     }
     // Add the skill containing the workflow

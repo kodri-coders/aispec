@@ -17,10 +17,16 @@ export class Output {
     this.description = output.description;
     this.node = output;
     try {
-      this.schema = JSON.parse(output.schema);
+      if (typeof output.schema === 'object') {
+        this.schema = JSON.parse(output.schema['#text']);
+      }
+      else {
+        this.schema = JSON.parse(output.schema);
+      }
     }
     catch (error) {
-      this.schema = output.schema;
+      console.error(error);
+      throw new Error('Invalid output schema');
     }
   }
 };
