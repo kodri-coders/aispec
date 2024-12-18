@@ -18,7 +18,8 @@ export class Output {
     this.node = output;
     try {
       this.schema = JSON.parse(output.schema);
-    } catch (error) {
+    }
+    catch (error) {
       this.schema = output.schema;
     }
   }

@@ -55,7 +55,7 @@ export class WorkflowRunner extends EventEmitter {
     const step: Step = this.workflow.steps[this.currentStep];
     const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
     const responseToolSchema = step?.output?.schema;
-    if(!responseToolSchema) {
+    if (!responseToolSchema) {
       throw new Error('Output schema not found');
     }
     const responseTool = {
@@ -71,7 +71,7 @@ export class WorkflowRunner extends EventEmitter {
     const assistantConfig = {
       name: this.assistant.name,
       skills: this.assistant?.skills?.map((s: any) => s.node['@id']),
-    }
+    };
     const response = await this.callLLM(systemPrompt, prompt, [responseTool], model);
     this.history.push({ prompt, response, assistantConfig, model });
     this.generateLog({ context: step?.prompt?.variables, prompt, response, assistantConfig, model });
@@ -80,9 +80,10 @@ export class WorkflowRunner extends EventEmitter {
 
   generateLog({ context, prompt, response, assistantConfig, model }: any): any {
     this.logs.push(
-      createLog(prompt, context, response, assistantConfig, model)
-    )
+      createLog(prompt, context, response, assistantConfig, model),
+    );
   }
+
   toXML(node: any): string {
     const builder = new XMLBuilder({
       ignoreAttributes: false,
@@ -100,17 +101,16 @@ export class WorkflowRunner extends EventEmitter {
       return;
     }
     const step = this.workflow.steps[this.currentStep];
-    if(step.node['@loop']){
-
+    if (step.node['@loop']) {
       const loop = this.context[step.node['@loop']];
       const prompts = [];
       const responses = [];
       for (const item of loop) {
-        const prompt = step.getPrompt({...this.context, [step.node['@as']]: item});
+        const prompt = step.getPrompt({ ...this.context, [step.node['@as']]: item });
         const data = await this.generateResponse(prompt);
-         prompts.push(prompt);
-         responses.push(data);
-        if(step.output.node.schema['@push']) {
+        prompts.push(prompt);
+        responses.push(data);
+        if (step.output.node.schema['@push']) {
           const contextVar = this.context[step.output.node.schema['@push']] || [];
           contextVar.push(data);
           this.setContext({
@@ -120,8 +120,8 @@ export class WorkflowRunner extends EventEmitter {
         }
       }
       this.emit('step-finished', prompts, responses);
-      
-    }else{
+    }
+    else {
       const prompt = step.getPrompt(this.context);
       const data = await this.generateResponse(prompt);
       this.setContext(data);
@@ -129,6 +129,14 @@ export class WorkflowRunner extends EventEmitter {
     }
   }
 }
+/**
+ *
+ * @param prompt
+ * @param context
+ * @param response
+ * @param assistantConfig
+ * @param model
+ */
 function createLog(prompt: any, context: any, response: any, assistantConfig: any, model: any): any {
   return `Prompt:
 ${prompt}
@@ -145,4 +153,3 @@ ${JSON.stringify(model, null, 2)}
 
 `;
 }
-
