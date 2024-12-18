@@ -63,3 +63,274 @@ exports[`assistant starts workflow 1`] = `
   ],
 }
 `;
+
+exports[`assistant starts workflow 2`] = `
+[
+  "Prompt:
+The user asked for a plant that matches the description of: 
+                    Tropical plants that grow in Athens, Greece on a pot in my balcony
+Context:
+[
+  "plant_query"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"type\\": \\"tool-call\\",\\n      \\"toolCallId\\": \\"call_lVb5sDVZlXSIvQ6fot2c5f1i\\",\\n      \\"toolName\\": \\"0\\",\\n      \\"args\\": {\\n        \\"plants\\": [\\n          \\"Bird of Paradise\\",\\n          \\"Banana Plant\\",\\n          \\"Rubber Plant\\",\\n          \\"Philodendron\\",\\n          \\"Monstera\\",\\n          \\"Fiddle Leaf Fig\\",\\n          \\"Croton\\",\\n          \\"Peace Lily\\",\\n          \\"Dracaena\\",\\n          \\"Spider Plant\\"\\n        ]\\n      }\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Bird of Paradise
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Banana Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Rubber Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Philodendron
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Monstera
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Fiddle Leaf Fig
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Croton
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Peace Lily
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Dracaena
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Spider Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+]
+`;

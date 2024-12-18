@@ -25,8 +25,8 @@ export class Output {
       }
     }
     catch (error) {
-      console.error(error);
-      throw new Error('Invalid output schema');
+      console.log(error);
+      throw new Error('Invalid schema');
     }
   }
 };
