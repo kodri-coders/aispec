@@ -1,0 +1,89 @@
+<assistant id="plant-finder">
+    <name>Plant finder</name>
+    <description>Find plants</description>
+    <model>
+        <name>gpt-4o</name>
+        <temperature>0.5</temperature>
+        <max_tokens>1000</max_tokens>
+    </model>
+    <skills>
+      <skill ref="tests/basic/artifacts/COT-skill.xml" />
+    </skills>
+    <workflows>
+        <workflow id="plant-find">
+            <name>Plant finder</name>
+            <description>given a plant description returns a list of plants that match it</description>
+            <input>
+                <name>Plant name</name>
+                <description>The name of the plant</description>
+                <schema>
+                    {
+                        "type": "object",
+                        "properties": {
+                            "plant_query": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                </schema>
+            </input>
+            <steps>
+                <step id="ideas-generation">
+                    <prompt>
+                    The user asked for a plant that matches the description of: 
+                    ${plant_query}
+                    </prompt>
+                    <output id="plants">
+                        <name>Plants</name>
+                        <schema>
+                            {
+                              "type": "object",
+                              "properties": {
+                                "plants": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  }
+                                }
+                              }
+                            }
+                        </schema>
+                    </output>
+                </step>
+                <step id="fill-plant-details" loop="plants" as="plant">
+                    <model>
+                        <name>o1-mini</name>
+                    </model>
+                    <prompt>
+                    The user asked for information about the plant: 
+                    ${plant}
+                    </prompt>
+                    <output id="plant-details">
+                        <name>Plant details</name>
+                        <schema push='plant_details'>
+                            {
+                              "type": "object",
+                              "properties": {
+                                "plant": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "latin_name": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                        </schema>
+                    </output>
+                </step>
+            </steps>
+        </workflow>
+    </workflows>
+</assistant>

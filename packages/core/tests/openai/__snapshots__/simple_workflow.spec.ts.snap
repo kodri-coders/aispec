@@ -1,0 +1,336 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assistant loads name and description 1`] = `"Plant finder"`;
+
+exports[`assistant loads name and description 2`] = `"Find plants"`;
+
+exports[`assistant loads workflows 1`] = `1`;
+
+exports[`assistant starts workflow 1`] = `
+{
+  "plant_details": [
+    {
+      "plant": {
+        "description": "The Bird of Paradise is a striking tropical plant known for its vibrant, bird-like flowers. Native to South Africa, it is a popular ornamental plant used in gardens and floral arrangements. The plant has large, banana-like leaves and can reach considerable heights. It thrives in warm climates and requires well-drained soil and full sun exposure to flourish.",
+        "latin_name": "Strelitzia reginae",
+        "name": "Bird of Paradise",
+      },
+    },
+    {
+      "plant": {
+        "description": "Ficus elastica, commonly known as the Rubber Plant, is a species of plant in the Moraceae family. Native to eastern parts of South Asia and Southeast Asia, it can grow as a large evergreen tree in its native habitat, reaching up to 30 meters (100 feet) tall. As a houseplant, it typically grows between 2.5 to 6 meters (8 to 20 feet). The Rubber Plant is known for its broad, glossy, dark green leaves, which can develop a burgundy tint under the right conditions. It's popular in interior design for its aesthetic appeal and relative ease of care, requiring moderate light, watering, and humidity levels.",
+        "latin_name": "Ficus elastica",
+        "name": "Rubber Plant",
+      },
+    },
+    {
+      "plant": {
+        "description": "Philodendrons are a large genus of flowering plants in the Araceae family, native to the tropical Americas. They are known for their large, often heart-shaped leaves and vining or climbing growth habit. Philodendrons are popular as houseplants due to their attractive foliage and adaptability to indoor conditions.",
+        "latin_name": "Philodendron spp.",
+        "name": "Philodendron",
+      },
+    },
+    {
+      "plant": {
+        "description": "Monstera deliciosa, also known as the Swiss cheese plant or split-leaf philodendron, is a popular tropical plant native to the rainforests of southern Mexico to Panama. It is characterized by its large, glossy green leaves that develop natural splits and holes as they mature, giving it a distinctive appearance. It thrives in bright, indirect light and requires well-draining soil with regular watering, allowing the top inch of soil to dry out between waterings. Monstera deliciosa is valued for its ornamental foliage and is commonly grown as a houseplant in temperate climates.",
+        "latin_name": "Monstera deliciosa",
+        "name": "Monstera deliciosa",
+      },
+    },
+    {
+      "plant": {
+        "description": "Dracaena is a genus of about 120 species of trees and succulent shrubs, commonly known as dracaenas. They are popular as houseplants due to their attractive foliage and low maintenance requirements. Dracaenas come in various sizes and leaf shapes, and some species are known for their air-purifying qualities.",
+        "latin_name": "Dracaena",
+        "name": "Dracaena",
+      },
+    },
+    {
+      "plant": {
+        "description": "Codiaeum variegatum, commonly known as croton, is a vibrant houseplant with colorful, variegated leaves. It is native to Southeast Asia and is popular for its bright foliage that comes in various colors including green, yellow, red, and orange. Crotons require bright, indirect light and regular watering, making them a favorite for indoor gardening enthusiasts.",
+        "latin_name": "Codiaeum variegatum",
+        "name": "Croton",
+      },
+    },
+  ],
+  "plant_query": "Tropical plants that grow in Athens, Greece on a pot in my balcony",
+  "plants": [
+    "Bird of Paradise",
+    "Ficus elastica",
+    "Philodendron",
+    "Monstera deliciosa",
+    "Dracaena",
+    "Croton",
+  ],
+}
+`;
+
+exports[`assistant starts workflow 2`] = `
+[
+  "Prompt:
+The user asked for a plant that matches the description of: 
+                    Tropical plants that grow in Athens, Greece on a pot in my balcony
+Context:
+[
+  "plant_query"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"type\\": \\"tool-call\\",\\n      \\"toolCallId\\": \\"call_lVb5sDVZlXSIvQ6fot2c5f1i\\",\\n      \\"toolName\\": \\"0\\",\\n      \\"args\\": {\\n        \\"plants\\": [\\n          \\"Bird of Paradise\\",\\n          \\"Banana Plant\\",\\n          \\"Rubber Plant\\",\\n          \\"Philodendron\\",\\n          \\"Monstera\\",\\n          \\"Fiddle Leaf Fig\\",\\n          \\"Croton\\",\\n          \\"Peace Lily\\",\\n          \\"Dracaena\\",\\n          \\"Spider Plant\\"\\n        ]\\n      }\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Bird of Paradise
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Banana Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Rubber Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Philodendron
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Monstera
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Fiddle Leaf Fig
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Croton
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Peace Lily
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Dracaena
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+The user asked for information about the plant: 
+                    Spider Plant
+Context:
+[
+  "plant"
+]
+Response:
+"{\\n  \\"text\\": \\"\\",\\n  \\"tools\\": [\\n    {\\n      \\"description\\": \\"Response Tool\\",\\n      \\"parameters\\": [\\n        {\\n          \\"type\\": \\"object\\",\\n          \\"properties\\": {\\n            \\"plant\\": {\\n              \\"type\\": \\"object\\",\\n              \\"properties\\": {\\n                \\"name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"latin_name\\": {\\n                  \\"type\\": \\"string\\"\\n                },\\n                \\"description\\": {\\n                  \\"type\\": \\"string\\"\\n                }\\n              }\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n}"
+Assistant Config:
+{
+  "name": "Plant finder",
+  "skills": [
+    "COT"
+  ]
+}
+Model:
+{
+  "name": "o1-mini"
+}
+------------------------------------------
+
+
+",
+]
+`;

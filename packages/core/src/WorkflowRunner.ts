@@ -1,6 +1,6 @@
 import { XMLBuilder } from 'fast-xml-parser';
+import { EventEmitter } from 'node:events';
 import { Step } from 'Step';
-import { EventEmitter } from 'stream';
 
 import { Assistant } from './Assistant';
 import { LLMEngine } from './LLMEngine';
@@ -42,16 +42,14 @@ export class WorkflowRunner extends EventEmitter {
   }
 
   async callLLM(systemPrompt: string, prompt: string, tools: any, model: any): Promise<any> {
-    console.log('prompt', prompt);
-    console.log('tools', tools);
-    console.log('model', model);
     return new LLMEngine(model).generateText({
       prompt,
       systemPrompt,
+      tools,
     });
   }
 
-  async generateResponse(prompt: string): Promise<any> {
+  async generateResponse(prompt: string, push?: string): Promise<any> {
     const step: Step = this.workflow.steps[this.currentStep];
     const model = step?.node.model || this.workflow?.node.model || this.assistant.node.model;
     const responseToolSchema = step?.output?.schema;
@@ -62,8 +60,17 @@ export class WorkflowRunner extends EventEmitter {
       description: 'Response Tool',
       parameters: [responseToolSchema],
       execute: async (params: any) => {
-        this.setContext(params);
-        this.emit('step-finished', prompt, params);
+        if (push) {
+          const contextVar = this.context[push] || [];
+          contextVar.push(params);
+          this.setContext({
+            ...this.context,
+            [push]: contextVar,
+          });
+        }
+        else {
+          this.setContext(params);
+        }
         return true;
       },
     };
@@ -80,7 +87,7 @@ export class WorkflowRunner extends EventEmitter {
 
   generateLog({ context, prompt, response, assistantConfig, model }: any): any {
     this.logs.push(
-      createLog(prompt, context, response, assistantConfig, model),
+      createLog(prompt, context, JSON.stringify(response, null, 2), assistantConfig, model),
     );
   }
 
@@ -90,6 +97,7 @@ export class WorkflowRunner extends EventEmitter {
       attributeNamePrefix: '@',
       format: true,
     });
+    console.log(JSON.stringify(node));
     return builder.build(node);
   }
 
@@ -107,24 +115,15 @@ export class WorkflowRunner extends EventEmitter {
       const responses = [];
       for (const item of loop) {
         const prompt = step.getPrompt({ ...this.context, [step.node['@as']]: item });
-        const data = await this.generateResponse(prompt);
+        const data = await this.generateResponse(prompt, step.output.node.schema['@push']);
         prompts.push(prompt);
         responses.push(data);
-        if (step.output.node.schema['@push']) {
-          const contextVar = this.context[step.output.node.schema['@push']] || [];
-          contextVar.push(data);
-          this.setContext({
-            ...this.context,
-            [step.output.node.schema['@push']]: contextVar,
-          });
-        }
       }
       this.emit('step-finished', prompts, responses);
     }
     else {
       const prompt = step.getPrompt(this.context);
       const data = await this.generateResponse(prompt);
-      this.setContext(data);
       this.emit('step-finished', prompt, data);
     }
   }

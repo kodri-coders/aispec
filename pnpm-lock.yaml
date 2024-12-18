@@ -80,11 +80,14 @@ importers:
       ai:
         specifier: ^4.0.11
         version: 4.0.12(react@18.3.1)(zod@3.23.8)
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
       fast-xml-parser:
         specifier: ^4.5.0
         version: 4.5.0
       zod:
-        specifier: 'catalog:'
+        specifier: ^3.23.8
         version: 3.23.8
     devDependencies:
       '@babel/types':
@@ -94,7 +97,7 @@ importers:
         specifier: ^29.5.5
         version: 29.5.14
       '@types/node':
-        specifier: 'catalog:'
+        specifier: ^22.9.3
         version: 22.10.1
       jest:
         specifier: ^29.7.0
@@ -103,7 +106,7 @@ importers:
         specifier: ^29.1.1
         version: 29.2.5(@babel/core@7.26.0)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.26.0))(jest@29.7.0(@types/node@22.10.1))(typescript@5.7.2)
       typescript:
-        specifier: 'catalog:'
+        specifier: ^5.6.2
         version: 5.7.2
 
   packages/tools/brave-search:
@@ -1801,6 +1804,10 @@ packages:
   dot-prop@5.3.0:
     resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
     engines: {node: '>=8'}
+
+  dotenv@16.4.7:
+    resolution: {integrity: sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==}
+    engines: {node: '>=12'}
 
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
@@ -5560,6 +5567,8 @@ snapshots:
   dot-prop@5.3.0:
     dependencies:
       is-obj: 2.0.0
+
+  dotenv@16.4.7: {}
 
   eastasianwidth@0.2.0: {}
 
