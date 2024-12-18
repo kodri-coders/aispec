@@ -94,6 +94,52 @@
             </schema>
           </output>
         </step>
+        <step id="backstories-generation">
+          <name>Backstories generation</name>
+          <description>Backstories generation step</description>
+          <prompt>          
+            Generate 10 backstories for the character: ${character}
+          </prompt>
+          <output id="backstories">
+            <name>Backstories</name>
+            <schema>
+              {
+                "type": "object",
+                "properties": {
+                  "backstories": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            </schema>
+          </output>
+        </step>
+        <step id="backstory-enhancement" loop="backstories" as="backstory" >
+          <name>Backstory enhancement</name>
+          <description>Backstory enhancement step</description>
+          <prompt>
+            Enhance the backstory: ${backstory}
+          </prompt>
+          <output id="enhanced-backstories">  
+            <name>Enhanced backstory</name>
+            <schema push='enhanced_backstories'>
+              {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "story": {
+                    "type": "string"
+                  }
+                }
+              }
+            </schema>
+          </output>
+        </step>
       </steps>
     </workflow>
   </workflows>

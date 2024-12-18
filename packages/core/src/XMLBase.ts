@@ -38,9 +38,6 @@ export class XMLBase {
     if (typeof node !== 'object') {
       throw new Error('Invalid XML');
     }
-    if (node['@ref']) {
-      node = XMLBase.loadXMLFile(node['@ref']);
-    }
     this.node = this.resolveRefs(node);
   }
 

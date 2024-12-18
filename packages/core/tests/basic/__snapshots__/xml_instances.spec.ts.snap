@@ -122,10 +122,541 @@ exports[`assistant starts workflow 1`] = `
               }</schema>
             </output>
           </step>
+          <step id="backstories-generation">
+            <name>Backstories generation</name>
+            <description>Backstories generation step</description>
+            <prompt>Generate 10 backstories for the character: \${character}</prompt>
+            <output id="backstories">
+              <name>Backstories</name>
+              <schema>{
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                  &quot;backstories&quot;: {
+                    &quot;type&quot;: &quot;array&quot;,
+                    &quot;items&quot;: {
+                      &quot;type&quot;: &quot;string&quot;
+                    }
+                  }
+                }
+              }</schema>
+            </output>
+          </step>
+          <step id="backstory-enhancement" loop="backstories" as="backstory">
+            <name>Backstory enhancement</name>
+            <description>Backstory enhancement step</description>
+            <prompt>Enhance the backstory: \${backstory}</prompt>
+            <output id="enhanced-backstories">
+              <name>Enhanced backstory</name>
+              <schema push="enhanced_backstories">{
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                  &quot;title&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                  },
+                  &quot;story&quot;: {
+                    &quot;type&quot;: &quot;string&quot;
+                  }
+                }
+              }</schema>
+            </output>
+          </step>
         </steps>
       </workflow>
     </workflows>
   </skill>
 </skills>
 "
+`;
+
+exports[`assistant starts workflow 2`] = `
+{
+  "backstories": [
+    "Backstory 1",
+    "Backstory 2",
+    "Backstory 3",
+    "Backstory 4",
+    "Backstory 5",
+    "Backstory 6",
+    "Backstory 7",
+    "Backstory 8",
+    "Backstory 9",
+    "Backstory 10",
+  ],
+  "character": "John Doe",
+  "enhanced_backstories": [
+    {
+      "story": "Enhanced backstory 1",
+      "title": "Backstory 1",
+    },
+    {
+      "story": "Enhanced backstory 2",
+      "title": "Backstory 2",
+    },
+    {
+      "story": "Enhanced backstory 3",
+      "title": "Backstory 3",
+    },
+    {
+      "story": "Enhanced backstory 4",
+      "title": "Backstory 4",
+    },
+    {
+      "story": "Enhanced backstory 5",
+      "title": "Backstory 5",
+    },
+    {
+      "story": "Enhanced backstory 6",
+      "title": "Backstory 6",
+    },
+    {
+      "story": "Enhanced backstory 7",
+      "title": "Backstory 7",
+    },
+    {
+      "story": "Enhanced backstory 8",
+      "title": "Backstory 8",
+    },
+    {
+      "story": "Enhanced backstory 9",
+      "title": "Backstory 9",
+    },
+    {
+      "story": "Enhanced backstory 10",
+      "title": "Backstory 10",
+    },
+  ],
+  "name": "John",
+  "surname": "Doe",
+  "surnames": [
+    "Doe",
+    "Smith",
+    "Lan",
+  ],
+  "surnamesLength": 2,
+}
+`;
+
+exports[`assistant starts workflow 3`] = `
+[
+  "Prompt:
+Produce 2 surnames that sound good with the name: John
+Context:
+[
+  "surnamesLength",
+  "name"
+]
+Response:
+{
+  "surnames": [
+    "Doe",
+    "Smith",
+    "Lan"
+  ]
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Given the name: John select one of the surnames: Doe,Smith,Lan
+Context:
+[
+  "name",
+  "surnames"
+]
+Response:
+{
+  "surname": "Doe"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Generate a character with the name: John and the surname: Doe
+Context:
+[
+  "name",
+  "surname"
+]
+Response:
+{
+  "character": "John Doe"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Generate 10 backstories for the character: John Doe
+Context:
+[
+  "character"
+]
+Response:
+{
+  "backstories": [
+    "Backstory 1",
+    "Backstory 2",
+    "Backstory 3",
+    "Backstory 4",
+    "Backstory 5",
+    "Backstory 6",
+    "Backstory 7",
+    "Backstory 8",
+    "Backstory 9",
+    "Backstory 10"
+  ]
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 1
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 1",
+  "story": "Enhanced backstory 1"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 2
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 2",
+  "story": "Enhanced backstory 2"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 3
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 3",
+  "story": "Enhanced backstory 3"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 4
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 4",
+  "story": "Enhanced backstory 4"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 5
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 5",
+  "story": "Enhanced backstory 5"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 6
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 6",
+  "story": "Enhanced backstory 6"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 7
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 7",
+  "story": "Enhanced backstory 7"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 8
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 8",
+  "story": "Enhanced backstory 8"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 9
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 9",
+  "story": "Enhanced backstory 9"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+  "Prompt:
+Enhance the backstory: Backstory 10
+Context:
+[
+  "backstory"
+]
+Response:
+{
+  "title": "Backstory 10",
+  "story": "Enhanced backstory 10"
+}
+Assistant Config:
+{
+  "name": "Movie builder",
+  "skills": [
+    "movie-building-skill",
+    "world-building-skill"
+  ]
+}
+Model:
+{
+  "name": "gpt-4o",
+  "temperature": 0.5,
+  "max_tokens": 1000
+}
+------------------------------------------
+
+
+",
+]
 `;
