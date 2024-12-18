@@ -5,51 +5,53 @@ import { XMLBase, type XMLBaseConstructor } from './XMLBase';
 
 interface IAssistantConstructor extends XMLBaseConstructor {
   '@id'?: string;
-  name?: string;
-  description?: string;
-  model?: any;
-  skills?: {
+  'description'?: string;
+  'model'?: any;
+  'name'?: string;
+  'skills'?: {
     skill: any[];
   };
-  workflows?: {
+  'workflows'?: {
     workflow: any[];
   };
 }
 
 export class Assistant extends XMLBase {
-  name?: string;
   description?: string;
-  workflows?: Workflow[] = [];
-  skills?: Skill[] = [];
-  model?: any;
-  excludedTags: string[] = ['model'];
-  mapping: any= {
-    id: "@id",
-    skills: ['skills.skill', Skill],
-    workflows:  ['workflows.workflow', Workflow],
-    model: 'model',
+  override excludedTags: string[] = ['model'];
+  mapping: any = {
     description: 'description',
-    name: 'name'
-  }
+    id: '@id',
+    model: 'model',
+    name: 'name',
+    skills: ['skills.skill', Skill],
+    workflows: ['workflows.workflow', Workflow],
+  };
+
+  model?: any;
+  name?: string;
+  skills?: Skill[] = [];
+  workflows?: Workflow[] = [];
+
   constructor(assistant: IAssistantConstructor | XMLBase) {
     super(assistant);
     this.mount();
   }
 
   findWorkflow(workflowId: string): any {
-    let targetWorkflow: Workflow | undefined;
+    let targetWorkflow: undefined | Workflow;
     let containingSkill: Skill | undefined;
 
     // Check global workflows
     targetWorkflow = this.workflows?.find(
-      (w) => w.workflow['@id'] === workflowId,
+      w => w.workflow['@id'] === workflowId,
     );
 
     // If not found in global workflows, check skills
     if (!targetWorkflow) {
       this.skills?.forEach((skill) => {
         const found = skill.workflows?.find(
-          (w) => w.workflow['@id'] === workflowId,
+          w => w.workflow['@id'] === workflowId,
         );
         if (found) {
           targetWorkflow = found;
@@ -61,18 +63,18 @@ export class Assistant extends XMLBase {
     if (!targetWorkflow) {
       throw new Error(`Workflow with id ${workflowId} not found`);
     }
-    return { workflow: targetWorkflow, skill: containingSkill };
+    return { skill: containingSkill, workflow: targetWorkflow };
   }
 
-  loadWorkflow(workflowId: string, input?: any): any {
+  loadWorkflow(workflowId: string): any {
     // Find the workflow and its containing skill
-    const { workflow: targetWorkflow, skill: containingSkill } =
-      this.findWorkflow(workflowId);
+    const { skill: containingSkill, workflow: targetWorkflow } = this
+      .findWorkflow(workflowId);
     const xmlObj: any = {
       assistant: {
-        name: this.name,
         description: this.description,
         model: this.model,
+        name: this.name,
         skills: {
           skill: [],
         },
@@ -81,8 +83,8 @@ export class Assistant extends XMLBase {
     // Add global skills
     if (this.skills) {
       xmlObj.assistant.skills.skill = this.skills
-        .filter((s) => s !== containingSkill)
-        .map((s) => ({ ...s.node, workflows: undefined }));
+        .filter(s => s !== containingSkill)
+        .map(s => ({ ...s.node, workflows: undefined }));
     }
     if (targetWorkflow && !containingSkill) {
       xmlObj.assistant.workflows = {

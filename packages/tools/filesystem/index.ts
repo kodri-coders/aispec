@@ -1,8 +1,12 @@
-import fs from "fs/promises";
-import path from "path";
-import { Tool } from "@aispec/tool-types";
+import { Tool } from '@aispec/tool-types';
+import fs from 'fs/promises';
+import path from 'path';
 
 // Security utilities
+/**
+ *
+ * @param requestedPath
+ */
 async function validatePath(requestedPath: string): Promise<string> {
   const absolute = path.isAbsolute(requestedPath)
     ? path.resolve(requestedPath)
@@ -10,13 +14,13 @@ async function validatePath(requestedPath: string): Promise<string> {
 
   const normalizedRequested = path.normalize(absolute);
   // Check if path is within allowed directories
-  const allowedDirectories = [path.resolve(process.cwd(), "..")];
-  const isAllowed = allowedDirectories.some((dir) =>
+  const allowedDirectories = [path.resolve(process.cwd(), '..')];
+  const isAllowed = allowedDirectories.some(dir =>
     normalizedRequested.startsWith(dir),
   );
   if (!isAllowed) {
     throw new Error(
-      `Access denied - path outside allowed directories: ${absolute} not in ${allowedDirectories.join(", ")}`,
+      `Access denied - path outside allowed directories: ${absolute} not in ${allowedDirectories.join(', ')}`,
     );
   }
 
@@ -24,31 +28,33 @@ async function validatePath(requestedPath: string): Promise<string> {
   try {
     const realPath = await fs.realpath(absolute);
     const normalizedReal = path.normalize(realPath);
-    const isRealPathAllowed = allowedDirectories.some((dir) =>
+    const isRealPathAllowed = allowedDirectories.some(dir =>
       normalizedReal.startsWith(dir),
     );
     if (!isRealPathAllowed) {
       throw new Error(
-        "Access denied - symlink target outside allowed directories",
+        'Access denied - symlink target outside allowed directories',
       );
     }
     return realPath;
-  } catch (error) {
+  }
+  catch {
     // For new files that don't exist yet, verify parent directory
     const parentDir = path.dirname(absolute);
     try {
       const realParentPath = await fs.realpath(parentDir);
       const normalizedParent = path.normalize(realParentPath);
-      const isParentAllowed = allowedDirectories.some((dir) =>
+      const isParentAllowed = allowedDirectories.some(dir =>
         normalizedParent.startsWith(dir),
       );
       if (!isParentAllowed) {
         throw new Error(
-          "Access denied - parent directory outside allowed directories",
+          'Access denied - parent directory outside allowed directories',
         );
       }
       return absolute;
-    } catch {
+    }
+    catch {
       // Create parent directory
       await fs.mkdir(parentDir, { recursive: true });
       return absolute;
@@ -57,260 +63,259 @@ async function validatePath(requestedPath: string): Promise<string> {
 }
 
 const readFileTool: Tool = {
-  id: "fs_read_file",
-  name: "Read File",
-  description: "Read the contents of a file",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to the file to read",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Read the contents of a file',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
-    const content = await fs.readFile(validPath, "utf-8");
+    const content = await fs.readFile(validPath, 'utf-8');
     return content;
   },
+  id: 'fs_read_file',
+  name: 'Read File',
+  parameters: [
+    {
+      description: 'Path to the file to read',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const writeFileTool = {
-  id: "fs_write_file",
-  name: "Write File",
-  description: "Creates or rewrites files",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "The name of the file to create/update",
-      required: true,
-    },
-    {
-      name: "content",
-      type: "string",
-      description:
-        "Content to write to the file.Make sure it is serialized in a single line for json.",
-      required: true,
-    },
-  ],
-
-  returnType: "string",
+  description: 'Creates or rewrites files',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     await fs.mkdir(path.dirname(validPath), { recursive: true });
     await fs.writeFile(validPath, params.content);
     return `File written to ${params.path}`;
   },
+  id: 'fs_write_file',
+  name: 'Write File',
+
+  parameters: [
+    {
+      description: 'The name of the file to create/update',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+    {
+      description:
+        'Content to write to the file.Make sure it is serialized in a single line for json.',
+      name: 'content',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const appendFileTool = {
-  id: "fs_append_file",
-  name: "Append File",
-  description: "Append content to a file",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to the file to append to",
-      required: true,
-    },
-    {
-      name: "content",
-      type: "string",
-      description: "Content to append to the file",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Append content to a file',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     await fs.appendFile(validPath, params.content);
     return `Content appended to ${params.path}`;
   },
+  id: 'fs_append_file',
+  name: 'Append File',
+  parameters: [
+    {
+      description: 'Path to the file to append to',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Content to append to the file',
+      name: 'content',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const deleteFileTool = {
-  id: "fs_delete_file",
-  name: "Delete File",
-  description: "Delete a file",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to the file to delete",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Delete a file',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     await fs.unlink(validPath);
     return `File deleted: ${params.path}`;
   },
+  id: 'fs_delete_file',
+  name: 'Delete File',
+  parameters: [
+    {
+      description: 'Path to the file to delete',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const listDirectoryTool = {
-  id: "fs_list_directory",
-  name: "List Directory",
-  description: "List contents of a directory",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to the directory to list",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'List contents of a directory',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     const entries = await fs.readdir(validPath, { withFileTypes: true });
-    const contents = entries.map((entry) => ({
+    const contents = entries.map(entry => ({
       name: entry.name,
-      type: entry.isDirectory() ? "directory" : "file",
+      type: entry.isDirectory() ? 'directory' : 'file',
     }));
     return JSON.stringify(contents, null, 2);
   },
+  id: 'fs_list_directory',
+  name: 'List Directory',
+  parameters: [
+    {
+      description: 'Path to the directory to list',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const createDirectoryTool = {
-  id: "fs_create_directory",
-  name: "Create Directory",
-  description: "Create a new directory",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to create the directory at",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Create a new directory',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     await fs.mkdir(validPath, { recursive: true });
     return `Directory created: ${params.path}`;
   },
+  id: 'fs_create_directory',
+  name: 'Create Directory',
+  parameters: [
+    {
+      description: 'Path to create the directory at',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const deleteDirectoryTool = {
-  id: "fs_delete_directory",
-  name: "Delete Directory",
-  description: "Delete a directory and its contents",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to the directory to delete",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Delete a directory and its contents',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
-    await fs.rm(validPath, { recursive: true, force: true });
+    await fs.rm(validPath, { force: true, recursive: true });
     return `Directory deleted: ${params.path}`;
   },
+  id: 'fs_delete_directory',
+  name: 'Delete Directory',
+  parameters: [
+    {
+      description: 'Path to the directory to delete',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const moveFileTool = {
-  id: "fs_move",
-  name: "Move File or Directory",
-  description: "Move a file or directory to a new location",
-  parameters: [
-    {
-      name: "source",
-      type: "string",
-      description: "Source path",
-      required: true,
-    },
-    {
-      name: "destination",
-      type: "string",
-      description: "Destination path",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Move a file or directory to a new location',
   handler: async (params: any) => {
     const validSourcePath = await validatePath(params.source);
     const validDestPath = await validatePath(params.destination);
     await fs.rename(validSourcePath, validDestPath);
     return `Moved ${params.source} to ${params.destination}`;
   },
+  id: 'fs_move',
+  name: 'Move File or Directory',
+  parameters: [
+    {
+      description: 'Source path',
+      name: 'source',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Destination path',
+      name: 'destination',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const copyFileTool = {
-  id: "fs_copy",
-  name: "Copy File or Directory",
-  description: "Copy a file or directory to a new location",
-  parameters: [
-    {
-      name: "source",
-      type: "string",
-      description: "Source path",
-      required: true,
-    },
-    {
-      name: "destination",
-      type: "string",
-      description: "Destination path",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Copy a file or directory to a new location',
   handler: async (params: any) => {
     const validSourcePath = await validatePath(params.source);
     const validDestPath = await validatePath(params.destination);
     await fs.cp(validSourcePath, validDestPath, { recursive: true });
     return `Copied ${params.source} to ${params.destination}`;
   },
+  id: 'fs_copy',
+  name: 'Copy File or Directory',
+  parameters: [
+    {
+      description: 'Source path',
+      name: 'source',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Destination path',
+      name: 'destination',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const getFileStatsTool = {
-  id: "fs_stats",
-  name: "Get File Stats",
-  description: "Get information about a file or directory",
-  parameters: [
-    {
-      name: "path",
-      type: "string",
-      description: "Path to get stats for",
-      required: true,
-    },
-  ],
-  returnType: "string",
+  description: 'Get information about a file or directory',
   handler: async (params: any) => {
     const validPath = await validatePath(params.path);
     const stats = await fs.stat(validPath);
     return JSON.stringify(
       {
-        size: stats.size,
         created: stats.birthtime,
-        modified: stats.mtime,
         isDirectory: stats.isDirectory(),
         isFile: stats.isFile(),
+        modified: stats.mtime,
+        size: stats.size,
       },
       null,
       2,
     );
   },
+  id: 'fs_stats',
+  name: 'Get File Stats',
+  parameters: [
+    {
+      description: 'Path to get stats for',
+      name: 'path',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const tools = {
-  readFileTool,
-  writeFileTool,
   appendFileTool,
-  deleteFileTool,
-  listDirectoryTool,
+  copyFileTool,
   createDirectoryTool,
   deleteDirectoryTool,
-  moveFileTool,
-  copyFileTool,
+  deleteFileTool,
   getFileStatsTool,
+  listDirectoryTool,
+  moveFileTool,
+  readFileTool,
+  writeFileTool,
 };
 
 export { tools };
-

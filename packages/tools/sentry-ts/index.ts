@@ -1,18 +1,18 @@
-import { Tool } from "@aispec/tool-types";
+import { Tool } from '@aispec/tool-types';
 import axios from 'axios';
 import { URL } from 'url';
 
 const SENTRY_API_BASE = 'https://sentry.io/api/0/';
 
 interface SentryIssueData {
-  title: string;
-  issueId: string;
-  status: string;
-  level: string;
-  firstSeen: string;
-  lastSeen: string;
   count: number;
+  firstSeen: string;
+  issueId: string;
+  lastSeen: string;
+  level: string;
   stacktrace: string;
+  status: string;
+  title: string;
 }
 
 class SentryManager {
@@ -28,30 +28,59 @@ class SentryManager {
     });
   }
 
-  private extractIssueId(issueIdOrUrl: string): string {
-    if (!issueIdOrUrl) {
-      throw new Error('Missing issue_id_or_url argument');
-    }
+  formatIssueData(data: SentryIssueData): string {
+    return `
+Sentry Issue: ${data.title}
+Issue ID: ${data.issueId}
+Status: ${data.status}
+Level: ${data.level}
+First Seen: ${data.firstSeen}
+Last Seen: ${data.lastSeen}
+Event Count: ${data.count}
 
-    if (issueIdOrUrl.startsWith('http://') || issueIdOrUrl.startsWith('https://')) {
-      const parsedUrl = new URL(issueIdOrUrl);
-      if (!parsedUrl.hostname || !parsedUrl.hostname.endsWith('.sentry.io')) {
-        throw new Error('Invalid Sentry URL. Must be a URL ending with .sentry.io');
+${data.stacktrace}
+    `.trim();
+  }
+
+  async getSentryIssue(issueIdOrUrl: string): Promise<SentryIssueData> {
+    try {
+      const issueId = this.extractIssueId(issueIdOrUrl);
+
+      // Get issue data
+      const issueResponse = await this.client.get(`issues/${issueId}/`);
+      if (issueResponse.status === 401) {
+        throw new Error('Unauthorized. Please check your Sentry authentication token.');
+      }
+      const issueData = issueResponse.data;
+
+      // Get issue hashes
+      const hashesResponse = await this.client.get(`issues/${issueId}/hashes/`);
+      const hashes = hashesResponse.data;
+
+      if (!hashes || !hashes.length) {
+        throw new Error('No Sentry events found for this issue');
       }
 
-      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
-      if (pathParts.length < 2 || pathParts[0] !== 'issues') {
-        throw new Error("Invalid Sentry issue URL. Path must contain '/issues/{issue_id}'");
+      const latestEvent = hashes[0].latestEvent;
+      const stacktrace = this.createStacktrace(latestEvent);
+
+      return {
+        count: issueData.count,
+        firstSeen: issueData.firstSeen,
+        issueId: issueId,
+        lastSeen: issueData.lastSeen,
+        level: issueData.level,
+        stacktrace: stacktrace,
+        status: issueData.status,
+        title: issueData.title,
+      };
+    }
+    catch (error) {
+      if (axios.isAxiosError(error)) {
+        throw new Error(`Error fetching Sentry issue: ${error.message}`);
       }
-
-      issueIdOrUrl = pathParts[pathParts.length - 1];
+      throw error;
     }
-
-    if (!/^\d+$/.test(issueIdOrUrl)) {
-      throw new Error('Invalid Sentry issue ID. Must be a numeric value.');
-    }
-
-    return issueIdOrUrl;
   }
 
   private createStacktrace(latestEvent: any): string {
@@ -93,98 +122,59 @@ class SentryManager {
     return stacktraces.length ? stacktraces.join('\n') : 'No stacktrace found';
   }
 
-  async getSentryIssue(issueIdOrUrl: string): Promise<SentryIssueData> {
-    try {
-      const issueId = this.extractIssueId(issueIdOrUrl);
-
-      // Get issue data
-      const issueResponse = await this.client.get(`issues/${issueId}/`);
-      if (issueResponse.status === 401) {
-        throw new Error('Unauthorized. Please check your Sentry authentication token.');
-      }
-      const issueData = issueResponse.data;
-
-      // Get issue hashes
-      const hashesResponse = await this.client.get(`issues/${issueId}/hashes/`);
-      const hashes = hashesResponse.data;
-
-      if (!hashes || !hashes.length) {
-        throw new Error('No Sentry events found for this issue');
-      }
-
-      const latestEvent = hashes[0].latestEvent;
-      const stacktrace = this.createStacktrace(latestEvent);
-
-      return {
-        title: issueData.title,
-        issueId: issueId,
-        status: issueData.status,
-        level: issueData.level,
-        firstSeen: issueData.firstSeen,
-        lastSeen: issueData.lastSeen,
-        count: issueData.count,
-        stacktrace: stacktrace,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error(`Error fetching Sentry issue: ${error.message}`);
-      }
-      throw error;
+  private extractIssueId(issueIdOrUrl: string): string {
+    if (!issueIdOrUrl) {
+      throw new Error('Missing issue_id_or_url argument');
     }
-  }
 
-  formatIssueData(data: SentryIssueData): string {
-    return `
-Sentry Issue: ${data.title}
-Issue ID: ${data.issueId}
-Status: ${data.status}
-Level: ${data.level}
-First Seen: ${data.firstSeen}
-Last Seen: ${data.lastSeen}
-Event Count: ${data.count}
+    if (issueIdOrUrl.startsWith('http://') || issueIdOrUrl.startsWith('https://')) {
+      const parsedUrl = new URL(issueIdOrUrl);
+      if (!parsedUrl.hostname || !parsedUrl.hostname.endsWith('.sentry.io')) {
+        throw new Error('Invalid Sentry URL. Must be a URL ending with .sentry.io');
+      }
 
-${data.stacktrace}
-    `.trim();
+      const pathParts = parsedUrl.pathname.split('/').filter(Boolean);
+      if (pathParts.length < 2 || pathParts[0] !== 'issues') {
+        throw new Error('Invalid Sentry issue URL. Path must contain \'/issues/{issue_id}\'');
+      }
+
+      issueIdOrUrl = pathParts[pathParts.length - 1];
+    }
+
+    if (!/^\d+$/.test(issueIdOrUrl)) {
+      throw new Error('Invalid Sentry issue ID. Must be a numeric value.');
+    }
+
+    return issueIdOrUrl;
   }
 }
 
 // Create a singleton instance with an empty token
 // Token will be set when the authenticate tool is called
-let sentryManager: SentryManager | null = null;
+let sentryManager: null | SentryManager = null;
 
 // Tool definitions
 const authenticateTool: Tool = {
-  id: 'authenticate',
-  name: 'Authenticate',
   description: 'Authenticate with Sentry using an auth token',
-  parameters: [
-    {
-      name: 'authToken',
-      type: 'string',
-      description: 'Sentry authentication token',
-      required: true,
-    }
-  ],
-  returnType: 'string',
   handler: async (params: any) => {
     sentryManager = new SentryManager(params.authToken);
     return 'Authentication successful';
   },
+  id: 'authenticate',
+  name: 'Authenticate',
+  parameters: [
+    {
+      description: 'Sentry authentication token',
+      name: 'authToken',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'string',
 };
 
 const getIssueTool: Tool = {
-  id: 'get_issue',
-  name: 'Get Issue',
   description: 'Retrieve and analyze a Sentry issue by ID or URL',
-  parameters: [
-    {
-      name: 'issueIdOrUrl',
-      type: 'string',
-      description: 'Sentry issue ID or URL to analyze',
-      required: true,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     if (!sentryManager) {
       throw new Error('Not authenticated. Please call authenticate first.');
@@ -195,6 +185,17 @@ const getIssueTool: Tool = {
       formatted: sentryManager.formatIssueData(issueData),
     };
   },
+  id: 'get_issue',
+  name: 'Get Issue',
+  parameters: [
+    {
+      description: 'Sentry issue ID or URL to analyze',
+      name: 'issueIdOrUrl',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'object',
 };
 
 const tools = [

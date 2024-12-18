@@ -12,12 +12,12 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "0.5.0",
     "express": "^4.21.1",
-    "zod": "^3.23.8",
+    "zod": "catalog:",
     "zod-to-json-schema": "^3.23.5"
   },
   "devDependencies": {
     "@aispec/tool-types": "workspace:*",
     "@types/express": "^5.0.0",
-    "typescript": "^5.6.2"
+    "typescript": "catalog:"
   }
 }

@@ -1,31 +1,32 @@
-import { Assistant } from "../../src";
-import * as path from "path";
+import * as path from 'path';
+
+import { Assistant } from '../../src';
 
 const artifactPath = path.join(
   __dirname,
-  "artifacts",
-  "movie-builder-assistant.xml",
+  'artifacts',
+  'movie-builder-assistant.xml',
 );
-const assistant = new Assistant({ "@ref": artifactPath });
-describe("assistant", () => {
-  it("loads name and description", () => {
+const assistant = new Assistant({ '@ref': artifactPath });
+describe('assistant', () => {
+  it('loads name and description', () => {
     expect(assistant.name).toMatchSnapshot();
     expect(assistant.description).toMatchSnapshot();
   });
-  it("loads workflows", () => {
+  it('loads workflows', () => {
     expect(assistant.workflows?.length).toMatchSnapshot();
   });
-  it("starts workflow", async () => {
-    const workflowRunner = assistant.loadWorkflow("character-building");
+  it('starts workflow', async () => {
+    const workflowRunner = assistant.loadWorkflow('character-building');
     const mockResponses: any = {
-      "Produce 2 surnames that sound good with the name: John": {
-        surnames: ["Doe", "Smith"],
+      'Generate a character with the name: John and the surname: Doe': {
+        character: 'John Doe',
       },
-      "Given the name: John select one of the surnames: Doe,Smith": {
-        surname: "Doe",
+      'Given the name: John select one of the surnames: Doe,Smith': {
+        surname: 'Doe',
       },
-      "Generate a character with the name: John and the surname: Doe": {
-        character: "John Doe",
+      'Produce 2 surnames that sound good with the name: John': {
+        surnames: ['Doe', 'Smith'],
       },
     };
     workflowRunner.callLLM = jest
@@ -33,15 +34,15 @@ describe("assistant", () => {
       .mockImplementation((systemPrompt: string, prompt: string) => {
         return mockResponses[prompt];
       });
-    workflowRunner.on("step-finished", (prompt: string, data: any) => {
-      console.log("step finished", prompt, data);
+    workflowRunner.on('step-finished', (prompt: string, data: any) => {
+      console.log('step finished', prompt, data);
       workflowRunner.next();
     });
-    workflowRunner.on("workflow-finished", (workflow: any) => {
-      console.log("workflow finished");
+    workflowRunner.on('workflow-finished', (workflow: any) => {
+      console.log('workflow finished');
     });
     const workflow = workflowRunner.start({
-      name: "John",
+      name: 'John',
       surnamesLength: 2,
     });
 

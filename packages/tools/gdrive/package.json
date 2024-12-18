@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@aispec/tool-types": "workspace:*",
-    "@types/node": "^22.9.3",
-    "typescript": "^5.6.2"
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
   }
 }

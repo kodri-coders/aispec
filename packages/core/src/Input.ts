@@ -1,14 +1,14 @@
 import { type XMLBaseConstructor } from './XMLBase';
 
 interface IInputConstructor extends XMLBaseConstructor {
-  name: string;
   description: string;
+  name: string;
   schema: string;
 }
 
 export class Input {
-  name: string;
   description: string;
+  name: string;
   schema: string;
 
   constructor(public input: IInputConstructor) {

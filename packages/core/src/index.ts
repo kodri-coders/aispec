@@ -1,4 +1,4 @@
-import { Assistant } from "./Assistant";
+import { Assistant } from './Assistant';
 export {
-  Assistant
-}
+  Assistant,
+};

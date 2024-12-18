@@ -1,65 +1,39 @@
-import { Tool } from "@aispec/tool-types";
+import { Tool } from '@aispec/tool-types';
 import { spawn } from 'child_process';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { mkdir, writeFile } from 'fs/promises';
 import { tmpdir } from 'os';
+import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 interface TypeScriptOutput {
-  stdout: string;
-  stderr: string;
   exitCode: number;
+  stderr: string;
+  stdout: string;
 }
 
 class TypeScriptRunner {
-  private async createTempProject(code: string): Promise<string> {
-    const tempDir = join(tmpdir(), `ts_${uuidv4()}`);
-    await mkdir(tempDir);
+  async installPackage(packageName: string): Promise<TypeScriptOutput> {
+    const projectDir = await this.createTempProject('');
 
-    // Create package.json
-    await writeFile(join(tempDir, 'package.json'), JSON.stringify({
-      "type": "module",
-      "dependencies": {
-        "@types/node": "latest",
-        "typescript": "latest",
-        "ts-node": "latest"
-      }
-    }));
+    return new Promise((resolve) => {
+      const npmProcess = spawn('npm', ['install', packageName], { cwd: projectDir });
+      let stdout = '';
+      let stderr = '';
 
-    // Create tsconfig.json
-    await writeFile(join(tempDir, 'tsconfig.json'), JSON.stringify({
-      "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "strict": true,
-        "skipLibCheck": true,
-        "outDir": "dist"
-      }
-    }));
+      npmProcess.stdout.on('data', (data) => {
+        stdout += data.toString();
+      });
 
-    // Create the TypeScript file
-    const filepath = join(tempDir, 'index.ts');
-    await writeFile(filepath, code);
-
-    return tempDir;
-  }
-
-  private async installDependencies(projectDir: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const npmProcess = spawn('npm', ['install'], { cwd: projectDir });
-      
       npmProcess.stderr.on('data', (data) => {
-        console.error(data.toString());
+        stderr += data.toString();
       });
 
       npmProcess.on('close', (code) => {
-        if (code === 0) {
-          resolve();
-        } else {
-          reject(new Error(`npm install failed with code ${code}`));
-        }
+        resolve({
+          exitCode: code ?? 0,
+          stderr,
+          stdout,
+        });
       });
     });
   }
@@ -75,9 +49,9 @@ class TypeScriptRunner {
       const timer = setTimeout(() => {
         tsProcess.kill();
         resolve({
-          stdout,
-          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
           exitCode: 124,
+          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
+          stdout,
         });
       }, timeout);
 
@@ -92,9 +66,9 @@ class TypeScriptRunner {
       tsProcess.on('close', (code) => {
         clearTimeout(timer);
         resolve({
-          stdout,
-          stderr,
           exitCode: code ?? 0,
+          stderr,
+          stdout,
         });
       });
     });
@@ -111,9 +85,9 @@ class TypeScriptRunner {
       const timer = setTimeout(() => {
         tsProcess.kill();
         resolve({
-          stdout,
-          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
           exitCode: 124,
+          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
+          stdout,
         });
       }, timeout);
 
@@ -128,9 +102,9 @@ class TypeScriptRunner {
       tsProcess.on('close', (code) => {
         clearTimeout(timer);
         resolve({
-          stdout,
-          stderr,
           exitCode: code ?? 0,
+          stderr,
+          stdout,
         });
       });
 
@@ -153,9 +127,9 @@ class TypeScriptRunner {
       const timer = setTimeout(() => {
         tsProcess.kill();
         resolve({
-          stdout,
-          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
           exitCode: 124,
+          stderr: stderr + '\nExecution timed out after ' + timeout / 1000 + ' seconds',
+          stdout,
         });
       }, timeout);
 
@@ -174,36 +148,63 @@ class TypeScriptRunner {
       tsProcess.on('close', (code) => {
         clearTimeout(timer);
         resolve({
-          stdout,
-          stderr,
           exitCode: code ?? 0,
+          stderr,
+          stdout,
         });
       });
     });
   }
 
-  async installPackage(packageName: string): Promise<TypeScriptOutput> {
-    const projectDir = await this.createTempProject('');
-    
-    return new Promise((resolve) => {
-      const npmProcess = spawn('npm', ['install', packageName], { cwd: projectDir });
-      let stdout = '';
-      let stderr = '';
+  private async createTempProject(code: string): Promise<string> {
+    const tempDir = join(tmpdir(), `ts_${uuidv4()}`);
+    await mkdir(tempDir);
 
-      npmProcess.stdout.on('data', (data) => {
-        stdout += data.toString();
-      });
+    // Create package.json
+    await writeFile(join(tempDir, 'package.json'), JSON.stringify({
+      dependencies: {
+        '@types/node': 'latest',
+        'ts-node': 'latest',
+        'typescript': 'latest',
+      },
+      type: 'module',
+    }));
+
+    // Create tsconfig.json
+    await writeFile(join(tempDir, 'tsconfig.json'), JSON.stringify({
+      compilerOptions: {
+        esModuleInterop: true,
+        module: 'ESNext',
+        moduleResolution: 'node',
+        outDir: 'dist',
+        skipLibCheck: true,
+        strict: true,
+        target: 'ESNext',
+      },
+    }));
+
+    // Create the TypeScript file
+    const filepath = join(tempDir, 'index.ts');
+    await writeFile(filepath, code);
+
+    return tempDir;
+  }
+
+  private async installDependencies(projectDir: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const npmProcess = spawn('npm', ['install'], { cwd: projectDir });
 
       npmProcess.stderr.on('data', (data) => {
-        stderr += data.toString();
+        console.error(data.toString());
       });
 
       npmProcess.on('close', (code) => {
-        resolve({
-          stdout,
-          stderr,
-          exitCode: code ?? 0,
-        });
+        if (code === 0) {
+          resolve();
+        }
+        else {
+          reject(new Error(`npm install failed with code ${code}`));
+        }
       });
     });
   }
@@ -214,105 +215,105 @@ const typescriptRunner = new TypeScriptRunner();
 
 // Tool definitions
 const runCodeTool: Tool = {
-  id: 'run_code',
-  name: 'Run TypeScript Code',
   description: 'Execute TypeScript code and return the output',
-  parameters: [
-    {
-      name: 'code',
-      type: 'string',
-      description: 'TypeScript code to execute',
-      required: true,
-    },
-    {
-      name: 'timeout',
-      type: 'number',
-      description: 'Execution timeout in milliseconds',
-      required: false,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     return await typescriptRunner.runCode(params.code, params.timeout);
   },
+  id: 'run_code',
+  name: 'Run TypeScript Code',
+  parameters: [
+    {
+      description: 'TypeScript code to execute',
+      name: 'code',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Execution timeout in milliseconds',
+      name: 'timeout',
+      required: false,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const runCodeWithInputTool: Tool = {
-  id: 'run_code_with_input',
-  name: 'Run TypeScript Code with Input',
   description: 'Execute TypeScript code with input data',
-  parameters: [
-    {
-      name: 'code',
-      type: 'string',
-      description: 'TypeScript code to execute',
-      required: true,
-    },
-    {
-      name: 'input',
-      type: 'string',
-      description: 'Input data to provide to the program',
-      required: true,
-    },
-    {
-      name: 'timeout',
-      type: 'number',
-      description: 'Execution timeout in milliseconds',
-      required: false,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     return await typescriptRunner.runCodeWithInput(params.code, params.input, params.timeout);
   },
+  id: 'run_code_with_input',
+  name: 'Run TypeScript Code with Input',
+  parameters: [
+    {
+      description: 'TypeScript code to execute',
+      name: 'code',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Input data to provide to the program',
+      name: 'input',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Execution timeout in milliseconds',
+      name: 'timeout',
+      required: false,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const runInteractiveCodeTool: Tool = {
-  id: 'run_interactive_code',
-  name: 'Run Interactive TypeScript Code',
   description: 'Execute TypeScript code that requires multiple user inputs',
-  parameters: [
-    {
-      name: 'code',
-      type: 'string',
-      description: 'TypeScript code to execute',
-      required: true,
-    },
-    {
-      name: 'inputs',
-      type: 'array',
-      description: 'Array of input strings to provide in sequence',
-      required: true,
-    },
-    {
-      name: 'timeout',
-      type: 'number',
-      description: 'Execution timeout in milliseconds',
-      required: false,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     return await typescriptRunner.runInteractiveCode(params.code, params.inputs, params.timeout);
   },
+  id: 'run_interactive_code',
+  name: 'Run Interactive TypeScript Code',
+  parameters: [
+    {
+      description: 'TypeScript code to execute',
+      name: 'code',
+      required: true,
+      type: 'string',
+    },
+    {
+      description: 'Array of input strings to provide in sequence',
+      name: 'inputs',
+      required: true,
+      type: 'array',
+    },
+    {
+      description: 'Execution timeout in milliseconds',
+      name: 'timeout',
+      required: false,
+      type: 'number',
+    },
+  ],
+  returnType: 'object',
 };
 
 const installPackageTool: Tool = {
-  id: 'install_package',
-  name: 'Install NPM Package',
   description: 'Install an NPM package',
-  parameters: [
-    {
-      name: 'packageName',
-      type: 'string',
-      description: 'Name of the package to install',
-      required: true,
-    }
-  ],
-  returnType: 'object',
   handler: async (params: any) => {
     return await typescriptRunner.installPackage(params.packageName);
   },
+  id: 'install_package',
+  name: 'Install NPM Package',
+  parameters: [
+    {
+      description: 'Name of the package to install',
+      name: 'packageName',
+      required: true,
+      type: 'string',
+    },
+  ],
+  returnType: 'object',
 };
 
 const tools = [
